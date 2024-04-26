@@ -12,7 +12,7 @@ module.exports = {
           data: [],
         });
       }
-    //   console.log(url);
+      //   console.log(url);
       const uniqueId = uniqueID();
       console.log("http://" + req.headers.host);
 
@@ -43,7 +43,7 @@ module.exports = {
   },
   redirectURL: async (req, res) => {
     try {
-    //   console.log(req.params.id);
+      //   console.log(req.params.id);
       const id = req.params.id;
       const getLink = await shortUrlModel.findOne({ uniqueId: id });
       if (!getLink) {
@@ -77,13 +77,33 @@ module.exports = {
   },
   getAnalytics: async (req, res) => {
     try {
-      const analyticsData = await shortUrlModel.find({});
+      const analyticsData = await shortUrlModel.aggregate([
+        {
+          $match: {},
+        },
+        {
+          $addFields: {
+            TotalClicks: {
+              $size: "$clicks",
+            },
+          },
+        },
+        {
+          $project: {
+            uniqueId: 1,
+            _id: 0,
+            TotalClicks: 1,
+            url:1,
+            clicks:1
+          },
+        },
+      ]);
       res.status(200).json({
-        status:"success",
-        message:"Data Of All Links",
-        data:analyticsData
-      })
-    //   console.log(analyticsData);
+        status: "success",
+        message: "Data Of All Links",
+        data: analyticsData,
+      });
+      //   console.log(analyticsData);
     } catch (error) {
       console.log(error);
       console.log(error.message);
