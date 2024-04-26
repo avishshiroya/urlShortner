@@ -5,7 +5,8 @@ const cookieParser = require('cookie-parser')
 const dotenv = require('dotenv')
 const connectDB = require('./config/db')
 const shortUrlRoutes = require('./routes/shortUrl')
-
+const morgan = require('morgan')
+const logger = require('./middlewares/winstonLogger')
 dotenv.config();
 connectDB()
 const app = express();
@@ -15,8 +16,8 @@ const app = express();
 app.use(cors());
 app.use(bodyParser.json({limit:'15mb'}));
 app.use(cookieParser())
+app.use(morgan("dev"))
 app.use("/url",shortUrlRoutes)
-
 
 //Root Route
 app.get("/",(req,res)=>{
