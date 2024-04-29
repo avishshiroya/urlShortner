@@ -22,7 +22,7 @@ module.exports = {
       const ShortUrl = new shortUrlModel({
         uniqueId: uniqueId,
         url: url,
-        shortUrl:req.originalUrl+'/url/'+uniqueId
+        shortUrl:req.headers.host+'url/'+uniqueId
       });
       const saveURL = await ShortUrl.save();
       if (!saveURL) {
