@@ -2,8 +2,9 @@ const { createLogger, format, transports } =require('winston');
 
 const { combine, timestamp, label, printf } = format;
 
-const myFormat = printf(({ level, message, label, timestamp }) => {
-    return `${timestamp} ${label} [${level}]: ${message}`; // LOG FORMAT
+const myFormat = printf(({ level, message, timestamp }) => {
+    console.log();
+    return `${timestamp} ${process.env.NODE_ENV} [${level}]: ${message}`; // LOG FORMAT
 });
 
 const devLogger = () => {

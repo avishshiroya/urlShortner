@@ -5,7 +5,7 @@ const printLogger = require('../middlewares/winstonLogger');
 const connectDB = async()=>{
     try {
         // console.log(process.env.MONGO_URI);
-        await mongoose.connect(process.env.MONGO_UR);+
+        await mongoose.connect(process.env.MONGO_URI);
         printLogger('info','DB Connected')
         console.log("DB Connected");
     } catch (error) {
