@@ -8,7 +8,7 @@ module.exports = {
       const { url } = req.body;
       if (!url) {
         // console.log(res);
-        // printLogger("error",res,"400 Url Not Found")
+        printLogger("error","400 Url Not Found")
         return res.status(400).json({
           status: "error",
           message: "Url Not Found",
@@ -26,7 +26,7 @@ module.exports = {
       });
       const saveURL = await ShortUrl.save();
       if (!saveURL) {
-        // printLogger("error",{res,msg:"400 Cannot Short This url"})
+        printLogger("error","400 Cannot Short This url")
 
         return res.status(400).json({
           status: "error",
@@ -38,11 +38,11 @@ module.exports = {
         message: "ShortUrl Maded",
         data: process.env.SHORTLINK + uniqueId,
       });
-      // printLogger("info",{res,msg:"200 ShortUrl Maded"})
+      printLogger("info","200 ShortUrl Maded")
       
     } catch (error) {
       console.log(error);
-      // printLogger('error',{res,msg:error.message})
+      printLogger('error',error.message)
       return res.status(500).json({
         status: "error",
         message: "INTERNAL SERVER ERROR",
@@ -56,6 +56,7 @@ module.exports = {
       const id = req.params.id;
       const getLink = await shortUrlModel.findOne({ uniqueId: id });
       if (!getLink) {
+      printLogger('error',`${getLink.uniqueId} cannot get link`)
         return res.status(404).json({
           status: "error",
           message: "Cannot get a Link",
@@ -70,12 +71,14 @@ module.exports = {
         { $push: { clicks: date } }
       );
       res.redirect(getLink.url);
+      printLogger('info',`${getLink.uniqueId} redirect`)
       // res.status(200).json({
       //     status:'success',
       //     message:"Url Is Redirected",
       //     data:[{id:req.params.id  }]
       // })
     } catch (error) {
+      printLogger('error',`${getLink.uniqueId} redirection error`)
       console.log(error);
       return res.status(500).json({
         status: "error",
@@ -112,10 +115,12 @@ module.exports = {
         message: "Data Of All Links",
         data: analyticsData,
       });
+      printLogger('info','Data get for analysis')
       //   console.log(analyticsData);
     } catch (error) {
       console.log(error);
       console.log(error.message);
+      printLogger('info',error.message)
       return res.status(500).json({
         status: "error",
         message: "INTERNAL SERVER ERROR",

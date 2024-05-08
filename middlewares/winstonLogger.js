@@ -14,18 +14,14 @@ const format = printf(({ level, message, timestamp }) => {
 const logger = winston.createLogger({
   level: "http",
   format: combine(timestamp(), format),
-  transports: [transport],
+  transports: new winston.transports.Console(),
 });
 
-const printLogger = (res,type, msg) => {
+const printLogger = (type, msg) => {
   if (type === "error") {
-    logger.error(
-      `${res.method} ${res.originalUrl} ${msg}`
-    );
+    logger.error(msg);
   } else {
-    logger.info(
-      `${res.method} ${res.originalUrl} ${msg}`
-    );
+    logger.info(msg);
   }
 };
 
