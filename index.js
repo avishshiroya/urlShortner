@@ -18,7 +18,7 @@ app.use(bodyParser.json({limit:'15mb'}));
 app.use(cookieParser())
 app.use(morgan("dev"))
 app.use("/url",shortUrlRoutes)
-
+app.use('/logs',express.static(__dirname + '/logs'))
 //Root Route
 app.get("/",(req,res)=>{
     res.status(200).json({
