@@ -13,7 +13,9 @@ const format = printf(({ level, message, timestamp }) => {
 
 const logger = winston.createLogger({
   level: "http",
-  format: combine( timestamp(), format),
+  format: combine( timestamp({
+    format: 'YYYY-MM-DD HH:mm:ss'
+  }), format),
   transports: [
     new winston.transports.DailyRotateFile({
       filename: "logs/log-%DATE%.log",
