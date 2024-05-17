@@ -9,6 +9,7 @@ const logRoutes = require('./routes/log')
 const morgan = require('morgan')
 const path = require('path')
 const logger = require('./middlewares/winstonLogger')
+const printLogger = require('./middlewares/winstonLogger')
 dotenv.config();
 connectDB()
 const app = express();
@@ -28,6 +29,7 @@ app.set("views", path.join(__dirname, "views"));
 app.set("view engine", "ejs");
 //Root Route
 app.get("/",(req,res)=>{
+    printLogger("info","at home page =====")
     res.render('Home')
 })
 
