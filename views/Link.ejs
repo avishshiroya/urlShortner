@@ -1,0 +1,15 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body>
+    <% if (!data) { %>
+        <p>No Link available</p>
+     <% } else { %>
+        <h1> Your Short Link Is :-</h1>    <a href="<%= data %>" target="_blank" rel="noopener noreferrer"><%= data %></a>
+     <% } %>
+</body>
+</html>

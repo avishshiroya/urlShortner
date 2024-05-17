@@ -5,7 +5,8 @@ const { uniqueID } = require("../utils/utils");
 module.exports = {
   madeShortURL: async (req, res) => {
     try {
-      const { url } = req.body;
+      const  {url}  = req.body;
+      // console.log(req);
       if (!url) {
         // console.log(res);
         printLogger("error","400 Url Not Found")
@@ -33,11 +34,11 @@ module.exports = {
           message: "Cannot Short This url",
         });
       }
-      res.status(200).json({
+      res.render("Link",{
         status: "success",
         message: "ShortUrl Maded",
-        data: process.env.SHORTLINK + uniqueId,
-      });
+        data: process.env.SHORTLINK + uniqueId,})
+      
       printLogger("info","200 ShortUrl Maded")
       
     } catch (error) {

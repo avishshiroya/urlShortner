@@ -1,0 +1,120 @@
+2024-05-17T10:56:58.534Z dev  [info] DB Connected
+2024-05-17T10:57:15.728Z dev  [info] DB Connected
+2024-05-17T10:57:39.866Z dev  [info] DB Connected
+2024-05-17T10:58:22.715Z dev  [info] DB Connected
+2024-05-17T10:58:36.173Z dev  [info] DB Connected
+2024-05-17T11:00:05.179Z dev  [info] DB Connected
+2024-05-17T11:00:17.213Z dev  [info] DB Connected
+2024-05-17T11:00:27.309Z dev  [info] DB Connected
+2024-05-17T11:02:46.852Z dev  [error] 400 Url Not Found
+2024-05-17T11:03:54.281Z dev  [info] DB Connected
+2024-05-17T11:03:54.638Z dev  [error] Cannot destructure property 'url' of 'req.input' as it is undefined.
+2024-05-17T11:04:11.717Z dev  [error] querySrv EREFUSED _mongodb._tcp.cluster0.og5faoi.mongodb.net
+2024-05-17T11:04:14.630Z dev  [error] req.input is not a function
+2024-05-17T11:04:45.276Z dev  [error] queryTxt EREFUSED cluster0.og5faoi.mongodb.net
+2024-05-17T11:05:15.323Z dev  [info] DB Connected
+2024-05-17T11:05:17.734Z dev  [error] 400 Url Not Found
+2024-05-17T11:05:27.789Z dev  [error] querySrv EREFUSED _mongodb._tcp.cluster0.og5faoi.mongodb.net
+2024-05-17T11:05:39.429Z dev  [info] DB Connected
+2024-05-17T11:05:43.731Z dev  [error] 400 Url Not Found
+2024-05-17T11:06:43.766Z dev  [error] 400 Url Not Found
+2024-05-17T11:07:17.544Z dev  [info] DB Connected
+2024-05-17T11:07:31.547Z dev  [info] DB Connected
+2024-05-17T11:07:34.096Z dev  [info] DB Connected
+2024-05-17T11:07:41.144Z dev  [info] 200 ShortUrl Maded
+2024-05-17T11:07:44.639Z dev  [info] 079axs41 redirect
+2024-05-17T11:08:46.308Z dev  [info] 200 ShortUrl Maded
+2024-05-17T11:09:33.536Z dev  [info] DB Connected
+2024-05-17T11:09:50.108Z dev  [info] DB Connected
+2024-05-17T11:10:12.030Z dev  [error] Invalid status code: {
+  status: 'success',
+  message: 'ShortUrl Maded',
+  data: 'http://localhost:1111/url/985pmwss'
+}
+2024-05-17T11:10:31.469Z dev  [info] DB Connected
+2024-05-17T11:10:33.812Z dev  [error] Invalid status code: {
+  status: 200,
+  message: 'ShortUrl Maded',
+  data: 'http://localhost:1111/url/77097xrm'
+}
+2024-05-17T11:10:52.383Z dev  [info] DB Connected
+2024-05-17T11:10:56.397Z dev  [error] Invalid status code: {
+  message: 'ShortUrl Maded',
+  data: 'http://localhost:1111/url/350ms61k'
+}
+2024-05-17T11:10:58.408Z dev  [error] Invalid status code: {
+  message: 'ShortUrl Maded',
+  data: 'http://localhost:1111/url/380glr2k'
+}
+2024-05-17T11:11:24.338Z dev  [info] DB Connected
+2024-05-17T11:11:32.491Z dev  [error] Invalid status code: http://localhost:1111/url/4397xuhm
+2024-05-17T11:12:26.537Z dev  [info] DB Connected
+2024-05-17T11:12:32.864Z dev  [info] DB Connected
+2024-05-17T11:13:09.192Z dev  [error] Invalid status code: {
+  status: 'success',
+  message: 'ShortUrl Maded',
+  data: 'http://localhost:1111/url/147cadc0'
+}
+2024-05-17T11:13:34.575Z dev  [info] DB Connected
+2024-05-17T11:14:06.468Z dev  [info] DB Connected
+2024-05-17T11:14:09.012Z dev  [info] 200 ShortUrl Maded
+2024-05-17T11:14:38.560Z dev  [info] DB Connected
+2024-05-17T11:14:47.369Z dev  [info] 200 ShortUrl Maded
+2024-05-17T11:15:00.673Z dev  [info] DB Connected
+2024-05-17T11:15:22.897Z dev  [info] DB Connected
+2024-05-17T11:15:46.378Z dev  [error] Invalid status code: { data: 'dummy' }
+2024-05-17T11:16:09.059Z dev  [info] DB Connected
+2024-05-17T11:16:13.458Z dev  [info] 200 ShortUrl Maded
+2024-05-17T11:16:13.489Z dev  [info] 200 ShortUrl Maded
+2024-05-17T11:16:22.834Z dev  [info] DB Connected
+2024-05-17T11:16:25.142Z dev  [info] 200 ShortUrl Maded
+2024-05-17T11:16:36.142Z dev  [info] DB Connected
+2024-05-17T11:16:38.715Z dev  [info] 200 ShortUrl Maded
+2024-05-17T11:17:16.361Z dev  [info] DB Connected
+2024-05-17T11:17:19.142Z dev  [info] 200 ShortUrl Maded
+2024-05-17T11:17:29.222Z dev  [info] DB Connected
+2024-05-17T11:17:31.610Z dev  [info] 200 ShortUrl Maded
+2024-05-17T11:18:44.381Z dev  [info] 200 ShortUrl Maded
+2024-05-17T11:18:45.623Z dev  [info] 350in8ti redirect
+2024-05-17T11:18:52.456Z dev  [info] 200 ShortUrl Maded
+2024-05-17T11:18:53.596Z dev  [info] 4246le1u redirect
+2024-05-17T11:19:06.484Z dev  [info] 200 ShortUrl Maded
+2024-05-17T11:19:07.613Z dev  [info] 456fekas redirect
+2024-05-17T11:20:34.774Z dev  [info] DB Connected
+2024-05-17T11:20:41.658Z dev  [info] 200 ShortUrl Maded
+2024-05-17T11:20:45.090Z dev  [info] 200 ShortUrl Maded
+2024-05-17T11:20:47.584Z dev  [info] 200 ShortUrl Maded
+2024-05-17T11:20:49.766Z dev  [info] 200 ShortUrl Maded
+2024-05-17T11:20:56.569Z dev  [info] 200 ShortUrl Maded
+2024-05-17T11:21:03.176Z dev  [info] 200 ShortUrl Maded
+2024-05-17T11:21:06.064Z dev  [info] 200 ShortUrl Maded
+2024-05-17T11:21:07.212Z dev  [info] 038f3h62 redirect
+2024-05-17T11:22:32.113Z dev  [info] DB Connected
+2024-05-17T11:24:47.524Z dev  [info] DB Connected
+2024-05-17T11:26:42.637Z dev  [info] DB Connected
+2024-05-17T11:29:04.878Z dev  [info] DB Connected
+2024-05-17T11:30:19.336Z dev  [info] DB Connected
+2024-05-17T11:30:37.917Z dev  [info] DB Connected
+2024-05-17T11:31:17.716Z dev  [info] DB Connected
+2024-05-17T11:32:40.273Z dev  [info] DB Connected
+2024-05-17T11:32:46.950Z dev  [info] 200 ShortUrl Maded
+2024-05-17T11:32:48.694Z dev  [info] 909mbxrh redirect
+2024-05-17T11:33:59.566Z dev  [info] 200 ShortUrl Maded
+2024-05-17T11:35:15.720Z dev  [info] DB Connected
+2024-05-17T11:35:49.875Z dev  [info] DB Connected
+2024-05-17T11:37:37.178Z dev  [info] DB Connected
+2024-05-17T11:38:07.549Z dev  [info] DB Connected
+2024-05-17T11:39:35.067Z dev  [info] DB Connected
+2024-05-17T11:40:14.290Z dev  [info] DB Connected
+2024-05-17T11:40:57.926Z dev  [info] DB Connected
+2024-05-17T11:41:32.265Z dev  [info] DB Connected
+2024-05-17T11:42:53.702Z dev  [info] DB Connected
+2024-05-17T11:42:59.466Z dev  [info] DB Connected
+2024-05-17T11:43:32.071Z dev  [info] DB Connected
+2024-05-17T11:45:33.464Z dev  [info] DB Connected
+2024-05-17T11:45:37.393Z dev  [info] DB Connected
+2024-05-17T11:46:14.574Z dev  [info] DB Connected
+2024-05-17T11:47:19.003Z dev  [info] DB Connected
+2024-05-17T11:47:34.015Z dev  [info] DB Connected
+2024-05-17T11:48:29.795Z dev  [info] DB Connected
+2024-05-17T11:48:47.852Z dev  [info] 200 ShortUrl Maded
