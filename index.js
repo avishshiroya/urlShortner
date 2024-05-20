@@ -10,6 +10,7 @@ const morgan = require('morgan')
 const path = require('path')
 const logger = require('./middlewares/winstonLogger')
 const printLogger = require('./middlewares/winstonLogger')
+require('./cron.js')
 dotenv.config();
 connectDB()
 const app = express();
