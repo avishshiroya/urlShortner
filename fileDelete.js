@@ -16,7 +16,7 @@ const fileUpload = async(file,filepath,type)=>{
         
         if(isUpload){
             let docName = Date.now() + "_" + Math.round(Math.random() * 1e9) + path.extname(file.name);
-            await file.mv(filepath + docName);
+            // await file.mv(filepath + docName);
             let filePath = filepath + docName;
             return filePath;
         }else{
