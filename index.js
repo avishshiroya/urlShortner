@@ -10,7 +10,12 @@ const morgan = require('morgan')
 const path = require('path')
 const logger = require('./middlewares/winstonLogger')
 const printLogger = require('./middlewares/winstonLogger')
+const {generateRegistrationOptions} = require('@simplewebauthn/server')
 require('./cron.js')
+const crypto = require('node:crypto')
+if(!globalThis.crypto){
+    globalThis.crypto = crypto
+}
 dotenv.config();
 connectDB()
 const app = express();
@@ -33,7 +38,24 @@ app.get("/",(req,res)=>{
     printLogger("info","at home page =====")
     res.render('Home')
 })
-
+app.post("/webauth",async(req,res)=>{
+    const challangePayload= await generateRegistrationOptions({
+        rpID:'localhost',
+        rpName:'my localhost',
+        userName:'avish',
+        requireUserVerification: true,
+        attestationType:'indirect',
+        extensions: { 'credProps': true },
+        authenticatorSelection: {
+            // Defaults
+            residentKey: 'required',
+            userVerification: 'required',
+            // Optional
+            authenticatorAttachment: 'cross-platform',
+          },        
+    })
+    return res.json({challangePayload})
+})
 const PORT = process.env.PORT || 1111
 app.listen(PORT,(err)=>{
     if(err){
