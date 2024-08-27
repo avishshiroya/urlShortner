@@ -77,7 +77,7 @@ const getUnique = (arr) => {
     return { count: count + 1, arr };
 }
 
-console.log(getUnique([0, 0, 1, 1, 1, 2, 2, 3, 3, 4]));
+// console.log(getUnique([0, 0, 1, 1, 1, 2, 2, 3, 3, 4]));
 
 
 // for (let i = 0; i < 9; i++) {
@@ -262,3 +262,143 @@ const pattern2 = (rows, variable) => {
 // ***
 // **
 // *
+
+// const longestPalindrome = (s) => {
+//     let n = s.length;
+//     console.log(n);
+//     if (n <= 1) { return s };
+//     let ans = [];
+//     for (let i = 0; i < n; i++) {
+//         for (let j = i + 1; j <= n; j++) {
+//             let substr = s.slice(i, j);
+//             if (substr.length > 1) {
+//                 if (substr === substr.split("").reverse().join("")) {
+//                     ans.push(substr);
+//                 }
+//             }
+//         }
+//     }
+//     // console.log("ans ", ans);
+//     // console.log(ans.sort((a, b) => b.length - a.length));
+//     return (ans[0]?.length >= 1 ? ans[0] : s[0]);
+// }
+// console.log(longestPalindrome("babad")); // ["a", "b
+// console.log(longestPalindrome("racecar")); // ["r", "a
+// console.log(longestPalindrome("abcddcba")); // ["a", "
+// console.log(longestPalindrome("ac")); // ["a"]
+// console.log(longestPalindrome("")); // []
+
+
+// const checkPalindrom = (s, i, j) => {
+//     while (i < j) {
+//         if (s[i++] != s[j--]) return false;
+//     }
+//     return true;
+// }
+// var countSubstrings = function (s) {
+//     let n = s.length;
+//     let ans = 0;
+//     for (let i = 0; i < n; i++) {
+//         for (let j = i; j < n; j++) {
+//             if (checkPalindrom(s, i, j)) ans++
+//         }
+//     }
+//     return ans;
+// };
+
+var countSubstrings = function (S) {
+    let len = S.length, ans = 0
+    for (let i = 0; i < len; i++) {
+        let j = i - 1, k = i
+        while (k < len - 1 && S[k] === S[k + 1]) k++
+        ans += (k - j) * (k - j + 1) / 2, i = k++
+        while (j >= 0 && k < len && S[k] === S[j]) j--, k++, ans++
+    }
+    return ans
+};
+// console.log(countSubstrings("babad"));
+// console.log(countSubstrings("racecar"));
+// console.log(countSubstrings("abcddcba"));
+// console.log(countSubstrings("ac"));
+// console.log(countSubstrings("ayeaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaah"));
+
+
+const zigzagConversion = (string, numRows) => {
+    if (numRows === 1 || string.length <= numRows) return string;
+    let rows = new Array(numRows).fill().map(k => []);
+    let i = 0
+    let down = true;
+    for (let letter of string) {
+        rows[i].push(letter);
+        if (i === numRows - 1) down = false
+        if (i === 0) down = true
+
+        i += down ? 1 : -1;
+    }
+    return rows.flat(numRows).join("");
+}
+
+// console.log(zigzagConversion("PAYPALISHIRING", 3));
+
+
+
+const reverseNumber = (x) => {
+    let isNegative = x < 0 ? true : false;
+    let number = Math.abs(x)
+    let reversed = 0;
+    while (number > 0) {
+        reversed = reversed * 10 + (number % 10);
+        number = Math.floor(number / 10);
+    }
+    reversed = isNegative ? -reversed : reversed
+    if (reversed > Math.pow(2, 32) - 1 || reversed < Math.pow(-2, 32)) {
+        return 0;
+    }
+    return isNegative ? -reversed : reversed;
+
+}
+// console.log(reverseNumber(1534236469))
+
+
+//kadanes algo
+
+const getMaxSumSubArray = (arr) => {
+    let max = arr[0];
+    let sum = arr[0];
+    for (let i = 1; i < arr.length; i++) {
+        sum = Math.max(arr[i], sum + arr[i]);
+        sum = sum + arr[i];
+        // console.log(sum);
+        max = Math.max(sum, max)
+        // console.log(max);
+    }
+    return max;
+}
+
+// console.log(getMaxSumSubArray([-2, -1]));
+
+
+//get the particular range number of array
+const rangeNum = (start, end) => {
+    if (end < start) return [];
+    // console.log(start, end);
+    const numbers = rangeNum(start, end - 1);
+    // console.log(numbers);
+    numbers.push(end);
+    return numbers;
+};
+
+// console.log(rangeNum(20, 30));
+
+const reverseString = (str) => {
+    if (str == "") {
+        return "";
+    } else {
+        console.log(str);
+        console.log("substr==", str.substr(1));
+        console.log("charAt == ", str.charAt(0));
+        return reverseString(str.substr(1)) + str.charAt(0)
+    }
+}
+
+console.log(reverseString("hello"));
