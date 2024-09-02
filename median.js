@@ -594,7 +594,69 @@ const brethFirstValues = (root) => {
     return res;
 }
 
-console.log(brethFirstValues(a));
+// console.log(brethFirstValues(a));
 
 
+var chalkReplacer = function (chalk, initialChalkPieces) {
+    let totalChalkNeeded = chalk.reduce((sum, studentChalkUse) => sum + studentChalkUse, 0);
+    console.log(totalChalkNeeded);
+    let remainingChalk = initialChalkPieces % totalChalkNeeded;
+    console.log(remainingChalk);
+    for (let studentIndex = 0; studentIndex < chalk.length; studentIndex++) {
+        console.log("remainingChalk == ", remainingChalk);
+        if (remainingChalk < chalk[studentIndex]) {
+            return studentIndex;
+        }
+        remainingChalk -= chalk[studentIndex];
+    }
 
+    return 0;
+};
+// console.log(chalkReplacer([5,1,5,6],21))
+
+
+function isVowel(ch) {
+    return ch === 'a' || ch === 'e' || ch === 'i' || ch === 'o'
+        || ch === 'u' || ch === 'A' || ch === 'E' || ch === 'I' || ch === 'O'
+        || ch === 'U';
+}
+var reverseVowels = function (s) {
+    let stringArr = s.split("");
+    let i = 0;
+    let j = stringArr.length - 1;
+    while (i < j) {
+        if (isVowel(stringArr[i])) {
+            if (isVowel(stringArr[j])) {
+                let temp = stringArr[i];
+                stringArr[i] = stringArr[j];
+                stringArr[j] = temp;
+                i++;
+                j--;
+            } else {
+                j--;
+            }
+        }
+        else {
+            i++;
+        }
+    }
+    return stringArr.join("");
+};
+
+// console.log(reverseVowels("leetcode"));
+
+
+const reverseWords = (string) => {
+    let s = string.split(" ");
+    const res = "";
+    console.log(s[0],s.length-1);
+    for (let i = s.length - 1; i >= 0; i--) {
+        if (s[i] !== "") {
+            res.push(s[i]);
+        }
+    }
+    return res.join(" ")
+
+}
+
+console.log(reverseWords("the sky       is blue"));
