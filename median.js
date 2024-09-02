@@ -401,4 +401,200 @@ const reverseString = (str) => {
     }
 }
 
-console.log(reverseString("hello"));
+// console.log(reverseString("hello"));
+
+
+var isValid = function (s) {
+    if (s.length < 2) return false;
+    const stack = [];
+    for (let i = 0; i < s.length; i++) {
+        if (s[i] === '(' || s[i] === '{' || s[i] === '[') {
+            stack.push(s[i]);
+        } else if (s[i] === ')' || s[i] === '}' || s[i] === ']') {
+            if (!stack[0]) {
+                return false
+            }
+            const top = stack.pop();
+            const char = s[i]
+            stack.includes
+            if (char === ')' && top !== '(' || char === ']' && top !== '[' || char === '}' && top !== '{') {
+                return false;
+            }
+        }
+    }
+    return true;
+};
+
+
+// console.log(isValid("(dfasdfdsf[dadsf{adsfadsf[sadfasdf(dsfasdf)]}])"));
+
+// On a 2D plane, we place n stones at some integer coordinate points. Each coordinate point may have at most one stone. A stone can be removed if it shares either the same row or the same column as another stone that has not been removed. Given an array stones of length n where stones[i] = [xi, yi] represents the location of the ith stone, return the largest possible number of stones that can be removed.
+
+// const removeStones = (arr, ans) => {
+//     let length = 0;
+//     for (let i = arr.length - 1; i >= 0; i--) {
+//         for (let j = i - 1; j >= 0; j--) {
+//             if (arr[i][0] === arr[j][0] || arr[i][1] === arr[j][1]) {
+//                 delete arr[i];
+//                 length += 1;
+//                 break;
+//             }
+//         }
+//     }
+//     return [length, length == ans];
+// }
+const removeStones = (arr, ans) => {
+    let length = 0;
+    const n = arr.length;
+    const visited = new Array(n).fill(false);
+
+    const dfs = (i) => {
+        visited[i] = true;
+        for (let j = 0; j < n; j++) {
+            if (!visited[j] && (arr[i][0] === arr[j][0] || arr[i][1] === arr[j][1])) {
+                length += 1;
+                dfs(j);
+            }
+        }
+    };
+
+    for (let i = 0; i < n; i++) {
+        if (!visited[i]) {
+            dfs(i);
+        }
+    }
+
+
+    return [length, length == ans];
+}
+// console.log(removeStones([[0, 1], [1, 0], [1, 1]], 2)); // 2
+// console.log(removeStones([[3, 2], [3, 1], [4, 4], [1, 1], [0, 2], [4, 0]], 4)); // 4
+// console.log(removeStones([[0, 0], [0, 1], [1, 0], [1, 2], [2, 1], [2, 2]], 5)); // 5
+// console.log(removeStones([[0, 0], [0, 2], [1, 1], [2, 0], [2, 2]], 3)); // 3
+// console.log(removeStones([[0, 0]], 0)); // 0
+// console.log(removeStones([[0, 0], [0, 1], [1, 0], [1, 2], [2, 1], [2, 2]], 5)); // 5
+// console.log(removeStones([[0, 0], [1, 0], [1, 1], [2, 1], [2, 2], [3, 2]], 5)); // 5
+
+const kidsWithCandies = (candies, extraCandies) => {
+    let max = Math.max(...candies);
+    const res = []
+    for (let i = 0; i < candies.length; i++) {
+        res.push((candies[i] + extraCandies) >= max ? true : false);
+    }
+    console.log(res);
+    return res;
+}
+
+// kidsWithCandies([2, 3, 5, 1, 3], 3)
+// kidsWithCandies([4, 2, 1, 1, 2], 1)
+// kidsWithCandies([12, 1, 12], 10)
+
+
+
+
+// sliding window 
+
+
+//find the maximim numbers with sliding window
+// ex:- [1,3,-1,-3,5,3,6,7]   k=3
+
+const slidingWindowMaxi = (arr, k) => {
+    let length = arr.length;
+    const result = [];
+    for (let i = 0; i <= length - k; i++) {
+        let max = arr[i]
+        for (let j = 1; j < k; j++) {
+            if (arr[i + j] > max) {
+                max = arr[i + j]
+            }
+        }
+        result.push(max)
+    }
+    return result;
+}
+
+// console.log(slidingWindowMaxi([1,3,-1,-3,5,3,6,7] ,3));
+
+
+// ---------------------- DepthFirstValues Binary Tree ---------------------
+
+class Node {
+    constructor(val) {
+        this.val = val;
+        this.left = null;
+        this.right = null;
+    }
+}
+
+const a = new Node('a');
+const b = new Node('b');
+const c = new Node('c');
+const d = new Node('d');
+const e = new Node('e');
+const f = new Node('f');
+const g = new Node('g');
+
+a.left = b;
+a.right = c;
+b.left = d;
+b.right = e;
+c.right = f;
+d.left = g;
+
+//1st way 
+
+// const depthFirstValues = (root) => {
+
+//     if (root === null) return [];
+//     let res = []
+
+//     const stack = [root];
+//     while (stack.length > 0) {
+//         let node = stack.pop();
+//         res.push(node.val);
+//         if (node.right) {
+//             stack.push(node.right);
+//         }
+//         if (node.left) {
+//             stack.push(node.left);
+//         }
+//     }
+//     return res
+// }
+
+
+//2nd way using recursion
+
+const depthFirstValues = (root) => {
+    if (root === null) return [];
+
+    const leftNode = depthFirstValues(root.left)
+    const rightNode = depthFirstValues(root.right)
+
+    return [root.val, ...leftNode, ...rightNode]
+}
+
+// console.log(depthFirstValues(a));
+
+
+
+// ---------------------- BrethFirstValues Binary Tree ---------------------
+
+const brethFirstValues = (root) => {
+    if (root === null) return [];
+    const res = [];
+    const stack = [root]
+    while (stack.length > 0) {
+        const current = stack.shift();
+        res.push(current.val);
+        if (current.left !== null) stack.push(current.left);
+        if (current.right !== null) stack.push(current.right);
+    }
+
+    return res;
+}
+
+console.log(brethFirstValues(a));
+
+
+
