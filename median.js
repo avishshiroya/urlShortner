@@ -649,7 +649,7 @@ var reverseVowels = function (s) {
 const reverseWords = (string) => {
     let s = string.split(" ");
     const res = "";
-    console.log(s[0],s.length-1);
+    console.log(s[0], s.length - 1);
     for (let i = s.length - 1; i >= 0; i--) {
         if (s[i] !== "") {
             res.push(s[i]);
@@ -659,4 +659,154 @@ const reverseWords = (string) => {
 
 }
 
-console.log(reverseWords("the sky       is blue"));
+// console.log(reverseWords("the sky       is blue"));
+
+
+//====== = = ========= = = =====   1945. Sum of Digits of String After Convert
+
+
+// const sumOfString = (string, k) => {
+//     let ans = string.split("").reduce((sum, value) => sum + (value.charCodeAt(0) - 96), '');
+//     while (k > 0) {
+//         ans = ans.toString().split('').reduce((sum, num) => sum + Number(num), 0);
+//         k--;
+//     }
+//     return ans;
+// }
+
+const sumOfString = (string, k) => {
+    let numStr = "";
+    for (let char of string) {
+        numStr += (char.charCodeAt(0) - 96).toString();
+    }
+    while (k > 0) {
+        let sum = 0;
+        for (let num of numStr) {
+            sum += parseInt(num);
+        }
+        numStr = sum.toString();
+        k--;
+    }
+    return numStr
+}
+
+
+// console.log("1=========", sumOfString("zbax", 2));
+// console.log("2=========", sumOfString("hvmhoasabaymnmsd", 1));
+// console.log("3=========", sumOfString("dbvmfhnttvr", 2));
+// console.log("4=========", sumOfString("ssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssss",
+//     1));
+// console.log("5=========", sumOfString("sssssswwsssssrrrrrrrrrttttttttttttttttttttttttttttttttttttttttttttttrrrrrrrrrrrrrrrrrrssssssssssssss",
+//     10));
+// console.log("6=========", sumOfString("abcdefghijklmnopqrstuvwxyz",
+//     5));
+// console.log("7=========", sumOfString("aucnewitainwctuancgacguagrycbfhsdbffhbfnvfhsrtsyfhyshfytufhsutgfghshejfhsjeghfjsehg",
+//     2));
+// console.log("8=========", sumOfString("asdfghlqwertyuiopzxcvbnmazqsxwdcefvrgbthnmyujkukl",
+//     2));
+// console.log("9=========", sumOfString("ijsbiushfjhsbfhaxvgrgvrjbxhrgghgujdjdkjaaqiuiwueubcbcnzkozizoiwowekdkdjkddjdji",
+//     2));
+
+// const mergeOverlappingIntervals = (arr) => {
+//     const res = [];
+//     for (let i = 0; i < arr.length; i++) {
+//         // console.log(res);
+//         if (!res[0]) {
+//             res.push(arr[i]);
+//         } else {
+//             const check = res.map((data, index) => {
+//                 // console.log(data);
+//                 if (data[1] >= arr[i][0] && data[0] <= arr[i][0]) { return index } else { return -1; }
+//             })
+//             // console.log(check[0]);
+//             if (check[0] !== -1) {
+//                 if (res[check[0]][1] < arr[i][1]) {
+//                     res[check[0]][1] = arr[i][1];
+//                 }
+//             } else {
+//                 res.push(arr[i]);
+//             }
+//         }
+//     }
+//     return res;
+// };
+const mergeOverlappingIntervals = (arr) => {
+    if (arr.length <= 1) return arr;
+
+    arr.sort((a, b) => a[0] - b[0]);
+
+    const res = [arr[0]];
+
+    for (let i = 1; i < arr.length; i++) {
+        const lastInterval = res[res.length - 1];
+
+        if (lastInterval[1] >= arr[i][0]) {
+            lastInterval[1] = Math.max(lastInterval[1], arr[i][1]);
+        } else {
+            res.push(arr[i]);
+        }
+    }
+
+    return res;
+};
+// console.log(mergeOverlappingIntervals([[1, 3], [2, 6], [8, 10], [8, 9], [9, 11], [15, 18], [2, 4], [16, 17]]));
+const robotSim = (commands, obstacles) => {
+    let x = 0, y = 0;
+    let direction = 0; // 0=N, 1=E, 2=S, 3=W
+    let maxDistance = 0;
+    const directions = [
+        [0, 1],   // North
+        [1, 0],   // East
+        [0, -1],  // South
+        [-1, 0]   // West
+    ];
+
+    // Convert obstacles to a set of strings for quick lookup
+    const obstacleSet = new Set(obstacles.map(ob => ob.toString()));
+
+    for (let command of commands) {
+        if (command === -1) {
+            // Turn right
+            direction = (direction + 1) % 4;
+        } else if (command === -2) {
+            // Turn left
+            direction = (direction + 3) % 4;
+        } else {
+            // Move forward in the current direction
+            const [dx, dy] = directions[direction];
+            for (let step = 0; step < command; step++) {
+                const newX = x + dx;
+                const newY = y + dy;
+                if (!obstacleSet.has(`${newX},${newY}`)) {
+                    x = newX;
+                    y = newY;
+                    maxDistance = Math.max(maxDistance, x * x + y * y);
+                }
+            }
+        }
+    }
+
+    return maxDistance;
+};
+
+
+
+// console.log(robotSim( [4,-1,4,-2,4], [[2,4]]));
+
+
+const secondLargest = (arr) => {
+    let largest = arr[0];
+    let sslargest = -1;
+
+    for (let i = 0; i < arr.length; i++) {
+        if (arr[i] > largest) {
+            sslargest = largest;
+            largest = arr[i];
+        } else if (a[i] < largest && a[i] > sslargest) {
+            sslargest = a[i];
+        }
+    }
+    return sslargest;
+}
+
+console.log(secondLargest([1, 45, 75, 87, 95, 75, 1]));
