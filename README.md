@@ -10,7 +10,7 @@ for check the email (not valid fake mail)
 
 # GRAPH Data Structure
 
--- Two type of Edges Direction  : 1). Uni-Directional  2). Bi-Directional
+- Two type of Edges Direction  : 1). Uni-Directional  2). Bi-Directional
 
--- Two Types of Edges Weight : 1). Weighted 2). Un-Weighted
+- Two Types of Edges Weight : 1). Weighted 2). Un-Weighted
 
