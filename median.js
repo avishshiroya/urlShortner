@@ -809,4 +809,67 @@ const secondLargest = (arr) => {
     return sslargest;
 }
 
-console.log(secondLargest([1, 45, 75, 87, 95, 75, 1]));
+// console.log(secondLargest([1, 45, 75, 87, 95, 75, 1]));
+
+// const findMissingObs = (arr, mean, n) => {
+//     let sum = 0;
+//     const ans = [];
+//     if (mean > arr.length || mean < 1 || mean > 6) {
+//         return []
+//     }
+//     for (let i = 0; i < arr.length; i++) {
+//         sum += arr[i];
+//     }
+//     const missingSum = (mean * (n + arr.length)) - sum;
+//     if (missingSum > 0 && missingSum <= 6) {
+//         return [missingSum];
+//     }
+//     else {
+//         const average = missingSum / n;
+//         const remiander = missingSum % n;
+//         for (let i = 0; i < n; i++) {
+//             ans[i] = average
+//             if (remiander > 0) {
+//                 ans[i]++; remiander--;
+//             }
+//         }
+//     }
+//     return ans;
+// }
+
+
+const findMissingObs = (arr, mean, n) => {
+    let sum = arr.reduce((acc, num) => acc + num, 0);
+    const totalLen = n + arr.length;
+    const missingSum = mean * totalLen - sum;
+
+
+    if (missingSum < n || missingSum > 6 * n) {
+        return [];
+    }
+
+
+    const ans = new Array(n).fill(Math.floor(missingSum / n));
+    let remainder = missingSum % n;
+
+
+    for (let i = 0; i < remainder; i++) {
+        ans[i]++;
+    }
+
+    return ans;
+}
+
+// console.log(findMissingObs([3, 2, 4, 3], 4, 2));
+// console.log(findMissingObs([1, 5, 6], 3, 4));
+
+
+const memoiFib = (num, memo = {}) => {
+    if (memo[num]) return memo[num];
+    if (num <= 2) return 1;
+    const result = memoiFib(num - 1, memo) + memoiFib(num - 2, memo);
+    memo[num] = result;
+    return result;
+}
+
+console.log(memoiFib(40));
