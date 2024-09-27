@@ -872,4 +872,34 @@ const memoiFib = (num, memo = {}) => {
     return result;
 }
 
-console.log(memoiFib(40));
+// console.log(memoiFib(40));
+
+
+var isPalindrome = function (x) {
+    const s = x.toString();
+    let j = s.length - 1;
+    let i = 0
+    while (i < j) {
+        if (s[i++] != s[j--]) return false;
+    }
+    return true;
+
+};
+
+// console.log(isPalindrome(-121));
+var minExtraChar = function (s, dictionary) {
+    const ss = new Set(dictionary);
+    const n = s.length;
+    const f = new Array(n + 1).fill(0);
+    for (let i = 1; i <= n; ++i) {
+        f[i] = f[i - 1] + 1;
+        for (let j = 0; j < i; ++j) {
+            if (ss.has(s.substring(j, i))) {
+                f[i] = Math.min(f[i], f[j]);
+            }
+        }
+    }
+    return f[n];
+}
+
+console.log(minExtraChar("kevlplxozaizdhxoimmraiakbak",["yv","bmab","hv","bnsll","mra","jjqf","g","aiyzi","ip","pfctr","flr","ybbcl","biu","ke","lpl","iak","pirua","ilhqd","zdhx","fux","xaw","pdfvt","xf","t","wq","r","cgmud","aokas","xv","jf","cyys","wcaz","rvegf","ysg","xo","uwb","lw","okgk","vbmi","v","mvo","fxyx","ad","e"]));
