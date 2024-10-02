@@ -902,4 +902,40 @@ var minExtraChar = function (s, dictionary) {
     return f[n];
 }
 
-console.log(minExtraChar("kevlplxozaizdhxoimmraiakbak",["yv","bmab","hv","bnsll","mra","jjqf","g","aiyzi","ip","pfctr","flr","ybbcl","biu","ke","lpl","iak","pirua","ilhqd","zdhx","fux","xaw","pdfvt","xf","t","wq","r","cgmud","aokas","xv","jf","cyys","wcaz","rvegf","ysg","xo","uwb","lw","okgk","vbmi","v","mvo","fxyx","ad","e"]));
+// console.log(minExtraChar("kevlplxozaizdhxoimmraiakbak",["yv","bmab","hv","bnsll","mra","jjqf","g","aiyzi","ip","pfctr","flr","ybbcl","biu","ke","lpl","iak","pirua","ilhqd","zdhx","fux","xaw","pdfvt","xf","t","wq","r","cgmud","aokas","xv","jf","cyys","wcaz","rvegf","ysg","xo","uwb","lw","okgk","vbmi","v","mvo","fxyx","ad","e"]));
+
+const arrayRankTransform = (arr) => {
+    const sorted = [...arr];
+    sorted.sort((a, b) => a - b);
+    let map = new Map();
+    let rank = 1;
+    for (let val of sorted) {
+        if (!map.has(val)) {
+            map.set(val, rank++);
+        }
+    }
+    for (let val of arr) {
+        arr[arr.indexOf(val)] = map.get(val);
+    }
+    return arr
+}
+
+// console.log(arrayRankTransform([-1000000000, -1000000000, -1000000000, 1000000000, 1000000000, 1000000000]));
+
+const coinChange = (coins, amount) => {
+    const arr = coins.slice().sort((a, b) => b - a);
+    let totalCoins = 0;
+    console.log(arr);
+    let i = 0;
+    while (amount > 0) {
+        if (amount > arr[i]) {
+            amount = amount - arr[i];
+            // console.log(amount);
+            totalCoins++;
+        }else{
+            i++;
+        }
+    }
+    return totalCoins;
+}
+console.log(coinChange([1, 2, 5], 11));
