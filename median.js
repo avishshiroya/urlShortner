@@ -984,6 +984,75 @@ var minLength = function (s) {
 
 
 
-// tree data structure
+// tree data structure - non linear DS
 
 // binary tree :- maximum 2 nodes
+// binary search tree :- left node is smaller than root and right node is greater than root
+// AVL tree :- balance factor is 1 or -1
+// B tree :- minimum 2 and maximum 3 child
+// degree of node means :- how many child node of the parent node
+// treminal nodes means :- who not have any child node
+
+// heap :- max or min heap
+// graph :- adjacency matrix or adjacency list
+// tree traversal :- pre, in, post, level order
+// graph traversal :- bfs, dfs
+
+
+
+// 238. Product of Array Except Self
+
+const productExceptSelf = function (nums) {
+    const front = [];
+    const back = Array(nums.length).fill(1);
+    const result = Array(nums.length);
+
+    for (let i = 0; i < nums.length; i++) {
+        if (i === 0) {
+            front[i] = nums[i];
+        } else {
+            front[i] = front[i - 1] * nums[i];
+        }
+    }
+
+    for (let i = nums.length - 1; i >= 0; i--) {
+        if (i === nums.length - 1) {
+            back[i] = nums[i];
+        } else {
+            back[i] = back[i + 1] * nums[i];
+        }
+    }
+
+
+    for (let i = 0; i < nums.length; i++) {
+        const frontProduct = i > 0 ? front[i - 1] : 1;
+        const backProduct = i < nums.length - 1 ? back[i + 1] : 1;
+        result[i] = frontProduct * backProduct;
+    }
+
+    return result;
+};
+
+// console.log(productExceptSelf([1, 2, 3, 4]));
+
+
+// increasing triplet
+
+const increasingTriplet = function (nums) {
+    let first = Infinity;
+    let second = Infinity;
+    for (let num of nums) {
+        if (first >= num) {
+            first = num;
+            continue;
+        }
+        if (second >= num) {
+            second = num;
+            continue;
+        }
+        return true;
+    }
+    return false;
+}
+
+console.log(increasingTriplet([[1,2,3,4,5]]));
