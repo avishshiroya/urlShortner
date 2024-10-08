@@ -932,10 +932,58 @@ const coinChange = (coins, amount) => {
             amount = amount - arr[i];
             // console.log(amount);
             totalCoins++;
-        }else{
+        } else {
             i++;
         }
     }
     return totalCoins;
 }
-console.log(coinChange([1, 2, 5], 11));
+// console.log(coinChange([1, 2, 5], 11));
+
+const minSubArray = (nums, p) => {
+    let sums = nums.reduce((acc, value) => (acc + value) % p, 0);
+    if (sums == 0) return 0;
+    const map = new Map();
+    map.set(0, -1);
+    let prefix_sum = 0;
+    let ans = nums.length;
+    for (let i = 0; i < nums.length; i++) {
+        prefix_sum += (prefix_sum + nums[i]) % p;
+        let check = (prefix_sum - sums + p) % p;
+        if (map.has(check) != map.has(map.size)) {
+            ans = Math.min(ans, 1 - map[check])
+        }
+        map[prefix_sum] = i
+    }
+    if (ans == nums.length) return -1;
+    return ans;
+}
+
+// console.log(minSubArray([1, 2, 3, 4], 6));
+
+//Minimum String Length After Removing Substrings
+var minLength = function (s) {
+    let temp = s;
+    while (temp.includes("AB") || temp.includes("CD")) {
+        if (temp.includes("AB")) {
+            temp = temp.replaceAll("AB", "");
+        } else if (temp.includes("CD")) {
+            temp = temp.replaceAll("CD", "")
+        }
+    }
+    // console.log(temp);
+    return temp.length;
+}
+
+// console.log(minLength("ACBBD"));
+
+
+// binary tree has run in three order:-
+
+// -> pre (root-left-right) , In(left-root-right) ans post(left-right-root)
+
+
+
+// tree data structure
+
+// binary tree :- maximum 2 nodes
