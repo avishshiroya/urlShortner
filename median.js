@@ -1055,4 +1055,18 @@ const increasingTriplet = function (nums) {
     return false;
 }
 
-console.log(increasingTriplet([[1,2,3,4,5]]));
+// console.log(increasingTriplet([[1,2,3,4,5]]));
+
+const maxGoodNumber = (nums) => {
+    for (let i = 0; i < nums.length; i++) {
+        nums[i] = nums[i].toString(2)
+    }
+    console.log(nums);
+    nums.sort((a, b) => {
+        if (a + b > b + a) return -1
+        else return 1
+    })
+    nums = nums.join("")
+    return parseInt(nums, 2)
+}
+console.log(maxGoodNumber([1, 2, 3]))
