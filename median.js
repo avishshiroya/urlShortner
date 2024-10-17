@@ -1069,4 +1069,152 @@ const maxGoodNumber = (nums) => {
     nums = nums.join("")
     return parseInt(nums, 2)
 }
-console.log(maxGoodNumber([1, 2, 3]))
+// console.log(maxGoodNumber([1, 2, 3]))
+
+var smallestChair = function (times, targetFriend) {
+    const [targetArrival] = times[targetFriend];
+    const arrivalQueue = times;
+    const leavingQueue = [...times];
+    arrivalQueue.sort((a, b) => a[0] - b[0]);
+    leavingQueue.sort((a, b) => (a[1] - b[1]) || (a[0] - b[0]));
+    const chairsByLeaveTime = new Map();
+    let chairsCount = 0;
+    let arriving = 0, leaving = 0;
+
+    while (arriving < arrivalQueue.length) {
+        let chairIdx;
+        const arrival = arrivalQueue[arriving][0];
+        const leave = leavingQueue[leaving][1];
+        if (arrival < leave) {
+            chairIdx = chairsCount++;
+        } else {
+            let freeChairIdx = leaving;
+            chairIdx = chairsByLeaveTime.get(leavingQueue[freeChairIdx++][0]);
+            while (arrival >= leavingQueue[freeChairIdx][1]) {
+                const nextChair = chairsByLeaveTime.get(leavingQueue[freeChairIdx][0]);
+                if (chairIdx > nextChair) {
+                    [leavingQueue[leaving], leavingQueue[freeChairIdx]] = [leavingQueue[freeChairIdx], leavingQueue[leaving]];
+                    chairIdx = nextChair;
+                }
+                ++freeChairIdx;
+            }
+            ++leaving;
+        }
+        if (targetArrival === arrival) {
+            return chairIdx;
+        }
+        chairsByLeaveTime.set(arrival, chairIdx);
+        arriving++;
+    }
+};
+
+// console.log(smallestChair([[1, 4], [2, 3], [4, 6]], 1));
+
+const compress = function (chars) {
+    let i = 0, length = 0;
+    while (i < chars.length) {
+        let curChar = chars[i];
+        chars[length++] = curChar
+
+        let count = 0;
+        while (i < n && curChar == chars[i]) {
+            count++;
+            i++;
+        }
+        if (count > 1) {
+            chars[length++] = String(count).split()
+            for (let c of count) {
+                chars[length++] = c
+            }
+        }
+    }
+    return length
+}
+// console.log(compress(["a", "b", "b", "b", "c"]))
+
+
+//Heap :- 
+// Tree Based Partially ordered DS
+// Two Types :- Max and Min Heap
+// Any Node's Key <= Parent's Key and >= Child's Key
+
+//Heap Operations :- 
+//standard :- Push , Peek , Poll
+//optional :- isEmpty , size , merge
+
+
+const maxKelements = function (nums, k) {
+    const pq = new MaxPriorityQueue({ compare: (a, b) => b - a })
+    for (const num of nums) {
+        pq.enqueue(num)
+    }
+    let score = 0
+    while (k) {
+        const ele = pq.dequeue()
+        score += ele
+        pq.enqueue(Math.ceil(ele / 3))
+        k--
+    }
+    return score
+}
+var longestDiverseString = function (a, b, c) {
+    let array = [["a", a], ["b", b], ["c", c]];
+
+    array.sort((a, b) => b[1] - a[1]);
+
+    let string = "";
+
+    while (array[0][1] > 0) {
+        if (string.length >= 2 && string[string.length - 1] === array[0][0] && string[string.length - 2] === array[0][0]) {
+            let is_added = false;
+            for (let i = 1; i < array.length; i++) {
+                if (array[i][1] !== 0) {
+                    string += array[i][0];
+                    array[i][1]--;
+                    is_added = true;
+                    break;
+                }
+            }
+            if (!is_added) {
+                return string;
+            }
+        } else {
+            string += array[0][0];
+            array[0][1]--;
+        }
+
+        array.sort((a, b) => b[1] - a[1]);
+    }
+
+    return string;
+};
+
+// console.log(longestDiverseString(1, 1, 7));  // Example usage
+
+const maximumSwap = function (num) {
+    const numStr = num.toString().split('');
+    let turningPoint = null;
+    for (let i = 0; i < numStr.length-1; i++) {
+        if (numStr[i] < numStr[i + 1]) {
+            turningPoint = i;
+            break;
+        }
+    }
+    if (turningPoint === null) return num;
+    let maxIndexToTheRight = turningPoint + 1;
+    for (let i = turningPoint + 2; i < numStr.length; i++) {
+        if (numStr[i] > numStr[maxIndexToTheRight]) {
+            maxIndexToTheRight = i
+        }
+    }
+
+    for (let i = 0; i <= turningPoint; i++) {
+        if (numStr[i] < numStr[maxIndexToTheRight]) {
+            [numStr[i], numStr[maxIndexToTheRight]] = [numStr[maxIndexToTheRight], numStr[i]]
+            break;
+        }
+    }
+    return Number(numStr.join(''))
+}
+
+console.log(maximumSwap(98368));
