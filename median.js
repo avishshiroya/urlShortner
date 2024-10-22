@@ -574,7 +574,7 @@ const depthFirstValues = (root) => {
     return [root.val, ...leftNode, ...rightNode]
 }
 
-// console.log(depthFirstValues(a));
+console.log(depthFirstValues(a));
 
 
 
@@ -594,7 +594,7 @@ const brethFirstValues = (root) => {
     return res;
 }
 
-// console.log(brethFirstValues(a));
+console.log(brethFirstValues(a));
 
 
 var chalkReplacer = function (chalk, initialChalkPieces) {
@@ -1194,7 +1194,7 @@ var longestDiverseString = function (a, b, c) {
 const maximumSwap = function (num) {
     const numStr = num.toString().split('');
     let turningPoint = null;
-    for (let i = 0; i < numStr.length-1; i++) {
+    for (let i = 0; i < numStr.length - 1; i++) {
         if (numStr[i] < numStr[i + 1]) {
             turningPoint = i;
             break;
@@ -1217,4 +1217,50 @@ const maximumSwap = function (num) {
     return Number(numStr.join(''))
 }
 
-console.log(maximumSwap(98368));
+// console.log(maximumSwap(98368));
+
+const maxUniqueSplit = (s) => {
+    let visited = new Set();
+    let max = 0;
+    let sLen = s.length;
+
+    function dfs(startIndex, currentCount) {
+        if (startIndex >= sLen) {
+            max = Math.max(max, currentCount);
+            return;
+        }
+        for (let endIndex = startIndex + 1; endIndex <= sLen; endIndex++) {
+            let substring = s.slice(startIndex, endIndex);
+            if (!visited.has(substring)) {
+                visited.add(substring);
+                dfs(endIndex, currentCount + 1);
+                visited.delete(substring);
+            }
+        }
+    }
+    dfs(0, 0);
+    return max;
+}
+
+// console.log(maxUniqueSplit("ababccc"))
+// Kth Largest Sum in a Binary Tree
+var kthLargestSum = function (root, k) {
+    if (!root) return -1;
+    let res = []
+    let q = [root]
+
+    while (q.length > 0) {
+        let n = q.length;
+        let sum = 0;
+        for (let i = 0; i < n; i++) {
+            let node = q.shift();
+            sum += node.val;
+            if (node.left) q.push(node.left);
+            if (node.right) q.push(node.right);
+
+        }
+        res.push(sum);
+    }
+    if (k > res.length) return -1;
+    return res.sort((a, b) => b - a)[k - 1];
+}
