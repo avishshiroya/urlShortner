@@ -574,7 +574,7 @@ const depthFirstValues = (root) => {
     return [root.val, ...leftNode, ...rightNode]
 }
 
-console.log(depthFirstValues(a));
+// console.log(depthFirstValues(a));
 
 
 
@@ -594,7 +594,7 @@ const brethFirstValues = (root) => {
     return res;
 }
 
-console.log(brethFirstValues(a));
+// console.log(brethFirstValues(a));
 
 
 var chalkReplacer = function (chalk, initialChalkPieces) {
@@ -1264,3 +1264,113 @@ var kthLargestSum = function (root, k) {
     if (k > res.length) return -1;
     return res.sort((a, b) => b - a)[k - 1];
 }
+
+var removeSubfolders = function (folder) {
+    let sortedFolder = folder.sort();
+    console.log(sortedFolder);
+    let res = [sortedFolder[0]];
+    let last = sortedFolder[0]
+    for (let i = 1; i < sortedFolder.length; i++) {
+        if (sortedFolder[i].startsWith(last + '/')) {
+            continue;
+        } else {
+            res.push(last = sortedFolder[i]);
+        }
+    }
+    console.log(res)
+};
+
+// removeSubfolders(["/a","/a/b","/c/d","/c/d/e","/c/f"])
+
+var kthSmallest = (arr, k) => {
+    arr.sort((a, b) => a - b);
+    console.log(arr[k - 1]);
+}
+// kthSmallest([7,10,4,3,20,15],3)
+
+var alternateSort = function (arr) {
+    let res = [];
+    arr.sort((a, b) => a - b);
+    let right = arr.length - 1;
+    let left = 0
+    while (left <= right) {
+        if (left == right) {
+            res.push(arr[left++])
+        } else {
+            res.push(arr[right--])
+            res.push(arr[left++])
+        }
+    }
+    return res
+}
+// console.log(alternateSort([1, 6, 9, 4, 3, 7, 8, 2]))
+
+function maximumSumSubarray(K, Arr, N) {
+    let max = 0;
+    let sum = 0;
+    for (let i = 0; i < K; i++) {
+        sum += Arr[i];
+    }
+    console.log(sum);
+    max = sum;
+
+    for (let i = 1; i <= N - K; i++) {
+        let prevElement = Arr[i - 1]
+        let nextElement = Arr[i + K - 1]
+        sum = sum - prevElement + nextElement
+        max = Math.max(sum, max)
+    }
+    return max
+}
+//   console.log(maximumSumSubarray(2,[100, 200, 300, 400],4));
+
+var longestSquareStreak = (num) => {
+    let numSet = new Set(num);
+    let maxLength = 0
+
+    for (let n of numSet) {
+        let length = 0;
+        let current = n;
+        while (numSet.has(current)) {
+            length++;
+            if (current > 100000) break;
+            current = current * current;
+        }
+        if (length > 1) {
+            maxLength = Math.max(maxLength, length)
+        }
+    }
+    return maxLength > 1 ? maxLength : -1;
+}
+// console.log(longestSquareStreak([2,3,5,6,7]))
+
+var printFirstNegativeInteger = (arr, k) => {
+    let queue = [];
+    for (let i = 0; i <= arr.length - k; i++) {  // Corrected loop condition
+        let isNegative = false;
+        for (let j = 0; j < k; j++) {
+            if (arr[i + j] <= 0) {
+                queue.push(arr[i + j]);
+                isNegative = true;
+                break;
+            }
+        }
+        if (!isNegative) {
+            queue.push(0);
+        }
+    }
+    return queue;
+}
+// console.log(printFirstNegativeInteger([-8,3,2,-6,10],2))
+var removeDuplicate = (arr) => {
+    let uniq = [];
+    for (let a of arr) {
+        if (uniq.includes(a)) {
+            continue;
+        } else {
+            uniq.push(a)
+        }
+    }
+    return uniq
+}
+console.log(removeDuplicate([2, 2, 3, 3, 7, 5] ))
