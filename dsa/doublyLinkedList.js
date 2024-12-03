@@ -378,7 +378,7 @@ const fib = (num, preveiousValue = {}) => {
 
 // console.log(fib(40));
 // console.log(fib(500));
-console.log(fib(5000));
+// console.log(fib(5000));
 // console.log(fib(5000));
 // console.log(fib(5000));
 // console.log(fib(5000));
@@ -393,6 +393,64 @@ console.log(fib(5000));
 // console.log(fib(5000));
 // console.log(fib(5000));
 
-const coinChange = (coin,amount)=>{
-    
+class ListNode {
+    constructor(val = 0, next = null) {
+        this.val = val;
+        this.next = next;
+    }
 }
+
+function reorderList(head) {
+    if (!head || !head.next || !head.next.next) return;
+
+    let slow = head, fast = head
+    while (fast && fast.next) {
+        slow = slow.next
+        fast = fast.next.next
+    }
+    let prev = null, curr = slow.next
+    slow.next = null
+    while (curr) {
+        let next = curr.next
+        curr.next = prev
+        prev = curr
+        curr = next
+    }
+    console.log(prev)
+    let first = head, second = prev
+    while (second) {
+        let nextFirst = first.next
+        let nextSecond = second.next
+        first.next = second
+        second.next = nextFirst
+        first = nextFirst
+        second = nextSecond
+    }
+}
+
+// Helper function to create a linked list from an array
+function createLinkedList(arr) {
+    if (!arr.length) return null;
+    let head = new ListNode(arr[0]);
+    let current = head;
+    for (let i = 1; i < arr.length; i++) {
+        current.next = new ListNode(arr[i]);
+        current = current.next;
+    }
+    return head;
+}
+
+// Helper function to convert a linked list to an array
+function linkedListToArray(head) {
+    const result = [];
+    while (head) {
+        result.push(head.val);
+        head = head.next;
+    }
+    return result;
+}
+
+// Test cases
+const test1 = createLinkedList([1, 2, 3, 4, 5]);
+reorderList(test1);
+console.log(linkedListToArray(test1)); // Expected Output: [1, 4, 2, 3]

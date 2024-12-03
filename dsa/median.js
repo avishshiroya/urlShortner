@@ -1373,4 +1373,348 @@ var removeDuplicate = (arr) => {
     }
     return uniq
 }
-console.log(removeDuplicate([2, 2, 3, 3, 7, 5] ))
+// console.log(removeDuplicate([2, 2, 3, 3, 7, 5] ))
+
+var canSortArray = function (nums) {
+    let arr = [...nums];
+    let arrLen = arr.length
+    let isSwap;
+    for (let i = 0; i < arrLen - 1; i--) {
+        isSwap = false;
+        for (let j = 0; j < arrLen - i - 1; j++) {
+            if (arr[j] > arr[j + 1]) {
+                [arr[j], arr[j + 1]] = [arr[j + 1], arr[j]]
+                isSwap = true;
+            } else {
+                return false;
+            }
+        }
+        if (!isSwap) {
+            break;
+        }
+    }
+    return true
+}
+// console.log(canSortArray([8,4,2,30,15]))
+
+
+const maximumBeauty = (items, queries) => {
+    // Sort items by descending price
+    items.sort((a, b) => a[0] - b[0]);
+
+    // Sort queries and keep track of original indexes for results
+    let sortedQueries = queries.map((price, index) => [price, index]).sort((a, b) => a[0] - b[0]);
+
+    let ans = Array(queries.length).fill(0);
+    let maxBeauty = 0;
+    let itemIndex = 0;
+
+    for (let [price, queryIndex] of sortedQueries) {
+        while (itemIndex < items.length && items[itemIndex][0] <= price) {
+            maxBeauty = Math.max(maxBeauty, items[itemIndex][1]);
+            itemIndex++;
+        }
+        ans[queryIndex] = maxBeauty;
+    }
+
+    return ans;
+};
+
+// Example usage
+// console.log(maximumBeauty([[1,2],[3,2],[2,4],[5,6],[3,5]], [1,2,3,4,5,6]));
+
+
+var countUnguarded = function (m, n, guards, walls) {
+    // genrate array of the m * n
+    let grid = Array(m).fill(0).map(() => Array(n).fill(0))
+
+    // guard =1
+    for (let [x, y] of guards) {
+        grid[x][y] = 1;
+    }
+    // wall = 2
+    for (let [x, y] of walls) {
+        grid[x][y] = 2;
+    }
+    // console.log(grid)
+
+    const checkRow = (x, y) => {
+        // console.log(x,y)
+        for (let i = y + 1; i < n; i++) {
+            // console.log("row check === ",x,y,grid[i][x])
+            if (grid[x][i] === 1 || grid[x][i] === 2) {
+                break;
+            } else {
+                grid[x][i] = 3
+            }
+        }
+        for (let i = y - 1; i >= 0; i--) {
+            if (i == -1) break;
+            if (grid[x][i] === 1 || grid[x][i] === 2) {
+                break;
+            }
+            else {
+                grid[x][i] = 3
+            }
+        }
+    }
+    const checkCol = (x, y) => {
+        for (let i = x + 1; i < m; i++) {
+            if (grid[i][y] === 1 || grid[i][y] === 2) {
+                break;
+            } else {
+                grid[i][y] = 3
+            }
+        }
+        for (let i = x - 1; i >= 0; i--) {
+            if (i == -1) break;
+            if (grid[i][y] === 1 || grid[i][y] === 2) {
+                break;
+            }
+            else {
+                grid[i][y] = 3
+            }
+        }
+    }
+
+    for (let [x, y] of guards) {
+        //check row
+        console.log(grid[x][y])
+        checkRow(x, y)
+        //check column
+        checkCol(x, y)
+    }
+    // console.log(grid)
+    let unguardedCount = 0;
+    for (let i = 0; i < m; i++) {
+        for (let j = 0; j < n; j++) {
+            if (grid[i][j] === 0) {
+                unguardedCount++;
+            }
+        }
+    }
+
+    // Log the final grid and return the count of unguarded cells
+    // console.log(grid);
+    return unguardedCount;
+};
+// console.log(countUnguarded(m = 4, n = 6, guards = [[0, 0], [1, 1], [2, 3]], walls = [[0, 1], [2, 2], [1, 4]]))
+
+
+var maxEqualRowsAfterFlips = function (matrix) {
+    const count = new Map();
+
+    for (const row of matrix) {
+        const key = row.map(n => row[0] ? 1 - n : n).join(',');
+        count.set(key, (count.get(key) || 0) + 1);
+    }
+
+    return Math.max(...count.values());
+};
+
+// remove duplicates-2
+var removeDuplicates = function (nums) {
+    // let index = 1; 
+    // let count = 1; 
+
+    // for (let i = 1; i < nums.length; i++) {
+    //     if (nums[i] === nums[i - 1]) {
+    //         count++;
+    //     } else {
+    //         count = 1;
+    //     }
+
+    //     if (count <= 2) {
+    //         nums[index] = nums[i];
+    //         index++;
+    //     }
+    // }
+    // return nums.slice(0, index);
+    let index = 0;
+    for (let i = 0; i < nums.length; i++) {
+        let count = 0;
+        for (let j = i + 1; j < nums.length; j++) {
+            if (nums[j] != nums[i]) { index++; break };
+            if (nums[i] == nums[j] && count == 1) {
+                nums[j] = "_";
+            }
+            if (nums[i] == nums[j]) {
+                count++;
+                // index++;
+            }
+        }
+    }
+    nums = nums.filter(n => n != "_");
+    return index
+};
+
+// console.log(removeDuplicates([0, 0, 1, 1, 1, 1, 2, 3, 3]))
+var slidingPuzzle = function (board) {
+    if (board[0].join("") == "123" && board[1].join("") == "450") {
+        return 0;
+    }
+    let queue = [[board, 0]];
+    let visited = new Set();
+    visited.add(board.map(row => row.join("")).join(""));
+    let directions = [[0, 1], [0, -1], [1,
+        0], [-1, 0]];
+    while (queue.length) {
+        let [board, step] = queue.shift();
+        for (let i = 0; i < 2; i++) {
+            for (let j = 0; j < 3; j++) {
+                if (board[i][j] == 4) {
+                    let x = i;
+                    let y = j;
+                    for (let k = 0; k < directions.length; k++) {
+                        let nx = x + directions[k][0];
+                        let ny = y + directions[k][1];
+                        if (nx >= 0 && nx < 2 && ny >= 0 && ny <
+                            3 && board[nx][ny] == 0) {
+                            let newBoard = board.map(row => row.slice());
+                            newBoard[x][y] = 0;
+                            newBoard[nx][ny] = 4;
+                            let newBoardStr = newBoard.map(row => row.join("")).join("");
+                            if (!visited.has(newBoardStr)) {
+                                queue.push([newBoard, step + 1]);
+                                visited.add(newBoardStr);
+                            }
+                        }
+                    }
+                }
+            }
+        }
+        return step + 1;
+    }
+}
+// console.log(slidingPuzzle([[4,1,2],[5,0,3]]))
+
+var findChampion = function (n, edges) {
+    const isUndefeted = new Array(n).fill(true);
+
+    for (let [winner, loser] of edges) {
+        isUndefeted[loser] = false
+    }
+    let champion = -1;
+    let stronger = 0;
+    for (let i = 0; i < n; i++) {
+        if (isUndefeted[i]) {
+            champion = i;
+            stronger++;
+        }
+    }
+    return stronger === 1 ? champion : -1;
+};
+
+// console.log(findChampion(n = 3, edges = [[0,1],[1,2]]))
+
+var shortestDistanceAfterQueries = function (n, queries) {
+    const cityRoads = Array.from({ length: n }, () => []);
+    for (let i = 0; i < n - 1; i++) {
+        cityRoads[i].push(i + 1)
+    }
+    const res = [];
+    const calculateRoad = () => {
+        const visited = new Array(n).fill(false);
+        const queue = [[0, 0]];
+        visited[0] = true;
+        while (queue.length) {
+            const [current, distance] = queue.shift();
+            if (current == n - 1) return distance
+            for (const next of cityRoads[current]) {
+                if (!visited[next]) {
+                    visited[next] = true;
+                    queue.push([next, distance + 1]);
+                }
+            }
+        }
+        return -1
+    }
+    for (const [idx, val] of queries) {
+        cityRoads[idx].push(val)
+        res.push(calculateRoad())
+    }
+    return res;
+};
+
+// console.log(shortestDistanceAfterQueries(5, [[0, 2], [0, 4]]))
+
+var minimumObstacles = function (grid) {
+    const rows = grid.length;
+    const cols = grid[0].length;
+
+
+    const visitedArr = Array.from({ length: rows }, () => Array(cols).fill(false));
+    visitedArr[0][0] = true;
+
+
+    const queue = [[0, 0, 0]]; // [current obstacles, x, y]
+
+    const directions = [
+        [0, 1],
+        [0, -1],
+        [1, 0],
+        [-1, 0],
+    ];
+
+    while (queue.length > 0) {
+        const [currentObstacles, x, y] = queue.shift();
+
+
+        if (x === rows - 1 && y === cols - 1) {
+            return currentObstacles;
+        }
+
+        for (const [dx, dy] of directions) {
+            const nx = x + dx;
+            const ny = y + dy;
+
+            // Skip invalid, out-of-bounds, or already visited cells
+            if (nx < 0 || ny < 0 || nx >= rows || ny >= cols || visitedArr[nx][ny]) {
+                continue;
+            }
+
+            visitedArr[nx][ny] = true;
+
+
+            if (grid[nx][ny] === 1) {
+                queue.push([currentObstacles + 1, nx, ny]); // Add obstacle
+            } else {
+                queue.unshift([currentObstacles, nx, ny]); // Add free path
+            }
+        }
+    }
+
+    return -1;
+};
+
+// Example usage
+// console.log(minimumObstacles([[0, 1, 1], [1, 1, 0], [1, 1, 0]])); // Output: 2
+
+var isPrefixOfWord = function (sentence, searchWord) {
+    let words = sentence.split(' ');
+    let index = 0;
+    for (let i = 0; i < words.length; i++) {
+        if (words[i].startsWith(searchWord)) {
+            index = i + 1;
+            break;
+        }
+    }
+    return index != 0 ? index : -1;
+    // console.log()
+};
+// console.log(isPrefixOfWord("i am tired", "you")); // Output: true
+
+var addSpaces = function (s, spaces) {
+    let spaceString = "";
+    for (let i = 0; i <= spaces.length; i++) {
+        if (i == 0) {
+            let substring = String(s).substring(0, spaces[i])
+            spaceString += substring;
+        } else {
+            let substring = String(s).substring(spaces[i - 1], spaces[i])
+            spaceString += " " + substring;
+        }
+    }
+    return spaceString
+};
+console.log(addSpaces("spacing", [0,1,2,3,4,5,6]))
