@@ -1717,4 +1717,33 @@ var addSpaces = function (s, spaces) {
     }
     return spaceString
 };
-console.log(addSpaces("spacing", [0,1,2,3,4,5,6]))
+// console.log(addSpaces("spacing", [0,1,2,3,4,5,6]))
+
+const canMakeSubsequence = (str1, str2) => {
+    let i = 0;
+    let j = 0;
+    while (i < str1.length && j < str2.length) {
+        if (str1[i] === str2[j]) {
+            j++;
+            i++;
+        }
+        else {
+            let newChar = String.fromCharCode(((str1[i].charCodeAt(0) - 97 + 1) % 26) + 97)
+            if (newChar === str2[j]) {
+                j++;
+                i++;
+            }
+            else {
+                i++
+            }
+        }
+    }
+    return str2.length == j ? true : false;
+}
+// console.log(canMakeSubsequence("eao", "ofa"))
+
+const delteNode = (node) => { // delete the node with out knowing the head 
+    node.val = node.next.val // add the next node value
+    node.next = node.next.next // skip the next node
+}
+
