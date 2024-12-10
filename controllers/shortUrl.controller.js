@@ -5,6 +5,7 @@ const { uniqueID } = require("../utils/utils");
 module.exports = {
   madeShortURL: async (req, res) => {
     try {
+      console.log(req.body);
       const  {url}  = req.body;
       // console.log(req);
       if (!url) {

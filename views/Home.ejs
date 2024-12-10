@@ -1,17 +1,40 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Document</title>
+    <script src="https://unpkg.com/@simplewebauthn/browser/dist/bundle/index.umd.min.js"></script>
 </head>
+
 <body>
-    <form action="/url/" method="post">
+    <form action="/url/" method="post" enctype="multipart/form-data">
         <input type="text" name="url" id="url">
         <button type="submit">Get Link !!</button>
     </form>
 
-   
-    
+    <button type="submit" id="btn">Get Link !!</button>
+    <script>
+        const btn = document.getElementById('btn');
+        btn.addEventListener('click', async (e) => {
+            // const url = new URL(window.location);
+            const response = await fetch('/webauth', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                }
+            })
+            const result = await response.json();
+            const { challangePayload } = result
+
+            const c = await SimpleWebAuthnBrowser.startRegistration(challangePayload);
+            console.log(c);
+        })
+
+    </script>
+
+
 </body>
+
 </html>

@@ -1747,3 +1747,28 @@ const delteNode = (node) => { // delete the node with out knowing the head
     node.next = node.next.next // skip the next node
 }
 
+const reverseArray = (arr) => {
+    let start = 0;
+    let end = arr.length - 1;
+    while (start < end) {
+        let temp = arr[start];
+        arr[start] = arr[end];
+        arr[end] = temp;
+        start++;
+        end--;
+    }
+    return arr;
+}
+// console.log(reverseArray([1, 2, 3, 4, 5, 6, 7]))
+
+var kthFactor = (n, k) => {
+    let factors = [];
+    for (let i = 1; i <= n; i++) {
+        if (n % i === 0) {
+            factors.push(i);
+        }
+    }
+    console.log(factors);
+    return factors[k - 1] ? factors[k - 1] : -1
+}
+console.log(kthFactor(12,3))
