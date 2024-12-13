@@ -1,0 +1,114 @@
+{
+  "status": 200,
+  "message": "Data retrieval successful.",
+  "data": [
+    {
+      "projectId": "67206bc572e8912a9c071750",
+      "organizationId": "6720681472e8912a9c071501",
+      "membersList": [
+        {
+          "organization": {
+            "_id": "6720681472e8912a9c071501",
+            "userId": "672066f50c62542049c13e7c",
+            "organizationImage": "https://hihand-images.s3.us-east-2.amazonaws.com/organizationImage/173017703287956.png",
+            "organizationName": "avish-org",
+            "createdAt": 1730177044430,
+            "updatedAt": 1730177044430,
+            "__v": 0
+          },
+          "organizationMembers": [
+            {
+              "_id": "672066f10c62542049c1317f",
+              "mobileNumber": "7984665968",
+              "countryCode": "+91",
+              "firstName": "preet",
+              "lastName": "crawl"
+            },
+            {
+              "_id": "6721e0920c62542049cbe059",
+              "mobileNumber": "1442242",
+              "countryCode": "+91",
+              "firstName": "abc",
+              "lastName": "xyz"
+            }
+          ]
+        },
+        {
+          "organization": {
+            "_id": "67470975cf102c78d5700f6c",
+            "userId": "6747092ea3f6ce9b1614af82",
+            "organizationImage": null,
+            "organizationName": "New Organisation",
+            "createdAt": 1732708725207,
+            "updatedAt": 1732708725207,
+            "__v": 0,
+            "access": {
+              "view": true,
+              "update": true,
+              "delete": false
+            }
+          },
+          "organizationMembers": [
+            {
+              "_id": "66d97571d8c51d0a97f309b7",
+              "mobileNumber": "9265493499",
+              "countryCode": "+91",
+              "firstName": "Noah",
+              "lastName": "Jake"
+            },
+            {
+              "_id": "673b11488635ffce7c40b1c1",
+              "mobileNumber": "9265493498",
+              "countryCode": "+91",
+              "firstName": "Damian",
+              "lastName": "Ethan"
+            }
+          ]
+        },
+        {
+          "organization": {
+            "_id": "6720679d72e8912a9c07141f",
+            "userId": "672066f10c62542049c1317f",
+            "organizationImage": "https://hihand-images.s3.us-east-2.amazonaws.com/organizationImage/17301769003147209.jpg",
+            "organizationName": "preet.org",
+            "createdAt": 1730176925048,
+            "updatedAt": 1730176925048,
+            "__v": 0,
+            "access": {
+              "view": true,
+              "update": true,
+              "delete": false
+            }
+          },
+          "organizationMembers": [
+            {
+              "_id": "672066f50c62542049c13e7c",
+              "mobileNumber": "8128308795",
+              "countryCode": "+91",
+              "firstName": "avish",
+              "lastName": "shiroya",
+              "profileImage": "https://hihand-images.s3.us-east-2.amazonaws.com/profileImage/17339941523908847.jpeg"
+            }
+          ]
+        },
+        {
+          "organization": {
+            "_id": "66d7069fc02d6e46a5aa0ecb",
+            "userId": "66d70655d8c51d0a973b88ca",
+            "organizationImage": null,
+            "organizationName": "Track Digital Tickets",
+            "createdAt": 1725367967085,
+            "updatedAt": 1725367967086,
+            "__v": 0,
+            "access": {
+              "view": true,
+              "update": false,
+              "delete": false
+            }
+          },
+          "organizationMembers": []
+        }
+      ]
+    }
+  ]
+}

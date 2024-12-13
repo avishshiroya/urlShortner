@@ -1771,4 +1771,81 @@ var kthFactor = (n, k) => {
     console.log(factors);
     return factors[k - 1] ? factors[k - 1] : -1
 }
-console.log(kthFactor(12,3))
+// console.log(kthFactor(12,3))
+
+// function reverse(arr, start, end){
+//     while(start < end){
+//         [arr[start],arr[end]]=[arr[end],arr[start]];
+//         start++;
+//         end--;
+//     }
+// }
+// function rotateArr(arr, d) {
+//     // code here
+//     let n = arr.length;
+//     d%=n;
+
+//     reverse(arr,0, d-1);
+
+//     reverse(arr, d, n-1);
+
+//     reverse(arr, 0, n-1);
+// }
+// console.log(rotateArray([1,2,3,4,5], 2))
+var pickGifts = function (gifts, k) {
+    while (k--) {
+        gifts.sort((a, b) => b - a);
+        let pile = gifts[0];
+        gifts.shift();
+        gifts.push(Math.floor(Math.sqrt(pile)));
+    }
+    return gifts.reduce((acc, curr) => acc + curr, 0);
+};
+
+// console.log(pickGifts([25,64,9,4,100],4))
+
+
+// var findScore = function (nums) {
+//     const isMarked = [];
+//     let score = 0;
+//     for (let i = 0; i < nums.length; i++) {
+//         let min = Math.min(...nums);
+//         let index = nums.indexOf(min);
+//         if (nums[index] == true) break;
+//         nums[index] = true;
+//         score += min;
+//         if (index !== 0) nums[index - 1] = true
+//         if (index !== nums.length - 1) nums[index + 1] = true
+//     }
+//     return score
+// };
+var findScore = function(nums) {
+    const marked = new Array(nums.length).fill(false);
+    let score = 0;
+    
+    for (let i = 0; i < nums.length; i++) {
+        // Find the minimum unmarked number and its index
+        let minIndex = -1;
+        let minValue = Infinity;
+        
+        for (let j = 0; j < nums.length; j++) {
+            if (!marked[j] && nums[j] < minValue) {
+                minValue = nums[j];
+                minIndex = j;
+            }
+        }
+        
+        // If no unmarked number found, break
+        if (minIndex === -1) break;
+        
+        // Mark the current number and adjacent numbers
+        marked[minIndex] = true;
+        score += minValue;
+        
+        if (minIndex > 0) marked[minIndex - 1] = true;
+        if (minIndex < nums.length - 1) marked[minIndex + 1] = true;
+    }
+    
+    return score;
+};
+console.log(findScore([2, 1, 3, 4, 5, 2]))

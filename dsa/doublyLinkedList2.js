@@ -131,3 +131,5 @@ doublyLinkedList.print();
 console.log("=------prev-----=")
 doublyLinkedList.reverse()
 doublyLinkedList.print();
+
+
