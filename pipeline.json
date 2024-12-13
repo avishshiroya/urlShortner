@@ -1,233 +1,233 @@
 [
-    // Convert accessOrganizationId and organizationId to ObjectId
-    {
-      $addFields: {
-        accessOrganizationId: {
-          $convert: {
-            input: "$accessOrganizationId",
-            to: "objectId",
-            onError: null,
-            onNull: null
-          }
-        },
-        organizationId: {
-          $convert: {
-            input: "$organizationId",
-            to: "objectId",
-            onError: null,
-            onNull: null
-          }
+  {
+    $match: {
+      projectId: projectId
+    }
+  },
+  {
+    $addFields: {
+      accessOrganizationId: {
+        $convert: {
+          input: "$accessOrganizationId",
+          to: "objectId",
+          onError: null,
+          onNull: null
         }
-      }
-    },
-  
-    // Lookup for access organization details
-    {
-      $lookup: {
-        from: "organizations",
-        localField: "accessOrganizationId",
-        foreignField: "_id",
-        as: "accessOrganization"
-      }
-    },
-    {
-      $unwind: {
-        path: "$accessOrganization",
-        preserveNullAndEmptyArrays: true
-      }
-    },
-  
-    // Convert accessOrganization.userId to ObjectId
-    {
-      $addFields: {
-        "accessOrganization.userId": {
-          $convert: {
-            input: "$accessOrganization.userId",
-            to: "objectId",
-            onError: null,
-            onNull: null
-          }
-        }
-      }
-    },
-  
-    // Lookup for the user who owns the access organization
-    {
-      $lookup: {
-        from: "users",
-        localField: "accessOrganization.userId",
-        foreignField: "_id",
-        as: "accessOrganization.user"
-      }
-    },
-    {
-      $unwind: {
-        path: "$accessOrganization.user",
-        preserveNullAndEmptyArrays: true
-      }
-    },
-  
-    // Convert joinUsers array to ObjectIds (make sure the joinUsers is an array of ObjectIds)
-    {
-      $addFields: {
-        joinUsers: {
-          $map: {
-            input: "$accessOrganization.user.joinUsers",
-            as: "joinUser",
-            in: { $toObjectId: "$$joinUser" }
-          }
-        }
-      }
-    },
-  
-    // Lookup for join users in the users collection to get user details
-    {
-      $lookup: {
-        from: "users",
-        localField: "joinUsers",
-        foreignField: "_id",
-        pipeline: [
-          {
-            $project: {
-              _id: 1,
-              firstName: 1,
-              lastName: 1,
-              profileImage: 1,
-              mobileNumber: 1,
-              countryCode: 1
-            }
-          }
-        ],
-        as: "accessOrganizationMembers"
-      }
-    },
-  
-    // Lookup for organization details
-    {
-      $lookup: {
-        from: "organizations",
-        localField: "organizationId",
-        foreignField: "_id",
-        as: "organization"
-      }
-    },
-    {
-      $unwind: {
-        path: "$organization",
-        preserveNullAndEmptyArrays: true
-      }
-    },
-  
-    // Convert organization.userId to ObjectId
-    {
-      $addFields: {
-        "organization.userId": {
-          $convert: {
-            input: "$organization.userId",
-            to: "objectId",
-            onError: null,
-            onNull: null
-          }
-        }
-      }
-    },
-  
-    // Lookup for the user who owns the organization
-    {
-      $lookup: {
-        from: "users",
-        localField: "organization.userId",
-        foreignField: "_id",
-        as: "organization.user"
-      }
-    },
-    {
-      $unwind: {
-        path: "$organization.user",
-        preserveNullAndEmptyArrays: true
-      }
-    },
-  
-    // Convert joinUsers array to ObjectIds (for organization)
-    {
-      $addFields: {
-        organizationJoinUsers: {
-          $map: {
-            input: "$organization.user.joinUsers",
-            as: "joinUser",
-            in: { $toObjectId: "$$joinUser" }
-          }
-        }
-      }
-    },
-  
-    // Lookup for organization members in the users collection
-    {
-      $lookup: {
-        from: "users",
-        localField: "organizationJoinUsers",
-        foreignField: "_id",
-        pipeline: [
-          {
-            $project: {
-              _id: 1,
-              firstName: 1,
-              lastName: 1,
-              profileImage: 1,
-              mobileNumber: 1,
-              countryCode: 1
-            }
-          }
-        ],
-        as: "organizationMembers"
-      }
-    },
-  
-    // Group by projectId and accessOrganizationId to collect organization members
-    {
-      $group: {
-        _id: {
-          projectId: "$projectId",
-          accessOrganizationId: "$accessOrganizationId"
-        },
-        projectId: { $first: "$projectId" },
-        organizationId: { $first: "$organizationId" },
-        organization: { $first: "$organization" },
-        accessOrganizationId: { $first: "$accessOrganizationId" },
-        accessOrganization: { $first: "$accessOrganization" },
-        accessOrganizationMembers: { $first: "$accessOrganizationMembers" },
-        organizationMembers: { $first: "$organizationMembers" }
-      }
-    },
-  
-    // Group by projectId to collect all access organizations and their members
-    {
-      $group: {
-        _id: "$projectId",
-        projectId: { $first: "$projectId" },
-        organizationId: { $first: "$organizationId" },
-        organization: { $push: { organization: "$organization", organizationMembers: "$organizationMembers" } },
-        accessOrganizations: {
-          $push: {
-            organization: "$accessOrganization",
-            accessOrganizationMembers: "$accessOrganizationMembers"
-          }
-        }
-      }
-    },
-    {
-      $unwind: {
-        path: "$organization",
-      }
       },
-    {
-      $project: {
-        "organization.organization.user":0,
-        "accessOrganization.organization.user":0
+      organizationId: {
+        $convert: {
+          input: "$organizationId",
+          to: "objectId",
+          onError: null,
+          onNull: null
+        }
       }
-    },
-    {
-      $limit: 1
+    }
+  },
+  // Lookup for access organization details
+  {
+    $lookup: {
+      from: "organizations",
+      localField: "accessOrganizationId",
+      foreignField: "_id",
+      as: "accessOrganization"
+    }
+  },
+  {
+    $unwind: {
+      path: "$accessOrganization",
+      preserveNullAndEmptyArrays: true
+    }
+  },
+  // Convert accessOrganization.userId to ObjectId
+  {
+    $addFields: {
+      "accessOrganization.userId": {
+        $convert: {
+          input: "$accessOrganization.userId",
+          to: "objectId",
+          onError: null,
+          onNull: null
+        }
+      },
+      // Add access data to accessOrganization
+      "accessOrganization.access": "$access"
+    }
+  },
+  // Lookup for the user who owns the access organization
+  {
+    $lookup: {
+      from: "users",
+      localField: "accessOrganization.userId",
+      foreignField: "_id",
+      as: "accessOrganization.user"
+    }
+  },
+  {
+    $unwind: {
+      path: "$accessOrganization.user",
+      preserveNullAndEmptyArrays: true
+    }
+  },
+  // Convert joinUsers array to ObjectIds (make sure the joinUsers is an array of ObjectIds)
+  {
+    $addFields: {
+      joinUsers: {
+        $map: {
+          input: "$accessOrganization.user.joinUsers",
+          as: "joinUser",
+          in: { $toObjectId: "$$joinUser" }
+        }
       }
-  ]
-  
+    }
+  },
+  // Lookup for join users in the users collection to get user details
+  {
+    $lookup: {
+      from: "users",
+      localField: "joinUsers",
+      foreignField: "_id",
+      pipeline: [
+        {
+          $project: {
+            _id: 1,
+            firstName: 1,
+            lastName: 1,
+            profileImage: 1,
+            mobileNumber: 1,
+            countryCode: 1
+          }
+        }
+      ],
+      as: "accessOrganizationMembers"
+    }
+  },
+  // Lookup for organization details
+  {
+    $lookup: {
+      from: "organizations",
+      localField: "organizationId",
+      foreignField: "_id",
+      as: "organization"
+    }
+  },
+  {
+    $unwind: {
+      path: "$organization",
+      preserveNullAndEmptyArrays: true
+    }
+  },
+  // Convert organization.userId to ObjectId
+  {
+    $addFields: {
+      "organization.userId": {
+        $convert: {
+          input: "$organization.userId",
+          to: "objectId",
+          onError: null,
+          onNull: null
+        }
+      }
+    }
+  },
+  // Lookup for the user who owns the organization
+  {
+    $lookup: {
+      from: "users",
+      localField: "organization.userId",
+      foreignField: "_id",
+      as: "organization.user"
+    }
+  },
+  {
+    $unwind: {
+      path: "$organization.user",
+      preserveNullAndEmptyArrays: true
+    }
+  },
+  // Convert joinUsers array to ObjectIds (for organization)
+  {
+    $addFields: {
+      organizationJoinUsers: {
+        $map: {
+          input: "$organization.user.joinUsers",
+          as: "joinUser",
+          in: { $toObjectId: "$$joinUser" }
+        }
+      }
+    }
+  },
+  // Lookup for organization members in the users collection
+  {
+    $lookup: {
+      from: "users",
+      localField: "organizationJoinUsers",
+      foreignField: "_id",
+      pipeline: [
+        {
+          $project: {
+            _id: 1,
+            firstName: 1,
+            lastName: 1,
+            profileImage: 1,
+            mobileNumber: 1,
+            countryCode: 1
+          }
+        }
+      ],
+      as: "organizationMembers"
+    }
+  },
+  // Group by projectId and accessOrganizationId to collect organization members
+  {
+    $group: {
+      _id: {
+        projectId: "$projectId",
+        accessOrganizationId: "$accessOrganizationId"
+      },
+      projectId: { $first: "$projectId" },
+      organizationId: { $first: "$organizationId" },
+      organization: { $first: "$organization" },
+      accessOrganizationId: { $first: "$accessOrganizationId" },
+      accessOrganization: { $first: "$accessOrganization" },
+      accessOrganizationMembers: { $first: "$accessOrganizationMembers" },
+      organizationMembers: { $first: "$organizationMembers" }
+    }
+  },
+  // Group by projectId to collect all access organizations and their members
+  {
+    $group: {
+      _id: "$projectId",
+      projectId: { $first: "$projectId" },
+      organizationId: { $first: "$organizationId" },
+      organization: {
+        $push: {
+          organization: "$organization",
+          organizationMembers: "$organizationMembers"
+        }
+      },
+      membersList: {
+        $push: {
+          organization: "$accessOrganization",
+          organizationMembers: "$accessOrganizationMembers"
+        }
+      }
+    }
+  },
+  {
+    $unwind: {
+      path: "$organization",
+    }
+  },
+  {
+    $project: {
+      _id: 0,
+      "organization.organization.user": 0,
+      "membersList.organization.user": 0
+    }
+  },
+  {
+    $limit: 1
+  }
+
+]
