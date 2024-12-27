@@ -1819,33 +1819,121 @@ var pickGifts = function (gifts, k) {
 //     }
 //     return score
 // };
-var findScore = function(nums) {
+var findScore = function (nums) {
     const marked = new Array(nums.length).fill(false);
     let score = 0;
-    
+
     for (let i = 0; i < nums.length; i++) {
         // Find the minimum unmarked number and its index
         let minIndex = -1;
         let minValue = Infinity;
-        
+
         for (let j = 0; j < nums.length; j++) {
             if (!marked[j] && nums[j] < minValue) {
                 minValue = nums[j];
                 minIndex = j;
             }
         }
-        
+
         // If no unmarked number found, break
         if (minIndex === -1) break;
-        
+
         // Mark the current number and adjacent numbers
         marked[minIndex] = true;
         score += minValue;
-        
+
         if (minIndex > 0) marked[minIndex - 1] = true;
         if (minIndex < nums.length - 1) marked[minIndex + 1] = true;
     }
-    
+
     return score;
 };
-console.log(findScore([2, 1, 3, 4, 5, 2]))
+// console.log(findScore([2, 1, 3, 4, 5, 2]))
+
+var getFinalState = function (nums, k, multiplier) {
+    for (let i = 0; i < k; i++) {
+        let min = Math.min(...nums)
+        let index = nums.indexOf(min)
+        console.log(index);
+        nums[index] = nums[index] * multiplier
+
+    }
+    return nums
+};
+// console.log(getFinalState(nums = [72,58,21,79,53,35,74,22,18,84,56,19,94,97,65,84,19,3,36,29,42,87,72,55,39,30,90,92,86,68,96,82,46,69,78,66,94,89,40,14,8,94,56,11,43,45,50,1,60,51,79,53,73,7,92,63,57,34,19,95,42,85,82,71,17,23,92,91,63,58,89,25,31,47,67,61,47,17,67,76,50,92,89,66,83,52,96,69,75,16,15,73,70,8,85,73,33,63,8,3], k = 10, multiplier = 5))
+
+var repeatLimitedString = function (s, repeatLimit) {
+    const map = []
+    for (let i = 0; i < s.length; i++) {
+        if (map[s[i]]) {
+            map[s[i]]++
+        }
+        else {
+            map[s[i]] = 1
+        }
+    }
+    const newMap = Array.from(map).sort((a, b) => a[1] - b[1]);
+    return newMap
+    // const sortedMap = new Map(newMap);
+    // let result = '';
+    // while (sortedMap.size > 0) {
+    //     let key = sortedMap.keys().next().value;
+    //     let value = sortedMap.get(key);
+    //     for (let i = 1; i <= repeatLimit; i++) {
+    //         if (value > 0) {
+    //             result += key;
+    //             value--;
+    //         }
+    //     }
+    // }
+    // return result;
+};
+// console.log(repeatLimitedString(s = "aababab", repeatLimit = 2))
+
+var maxVowels = function (s, k) {
+    // console.log(s,k)
+    let max = 0
+    let vowels = new Set(['a', 'e', 'i', 'o', 'u'])
+    let sub = s.substring(0, k)
+    let count = 0
+    for (let w of sub) {
+        if (vowels.has(w)) {
+            count++
+        }
+    }
+    max = Math.max(max, count)
+    for (let i = k; i < s.length - k; i++) {
+        let sub = s.substring(i, i + k)
+        let count = 0
+        for (let w of sub) {
+            if (vowels.has(w)) {
+                count++
+            }
+        }
+        max = Math.max(max, count)
+    }
+    return max
+};
+
+
+// console.log(maxVowels("weallloveyou", 7))
+function splitName(name) {
+    // Check if string has any space
+    if (!name.includes(' ')) {
+        return {
+            firstPart: name,
+            secondPart: ''
+        };
+    }
+    
+    const firstSpace = name.indexOf(' ');
+    const firstPart = name.substring(0, firstSpace);
+    const secondPart = name.substring(firstSpace + 1);
+    
+    return {
+        firstPart,
+        secondPart
+    };
+}
+
+console.log( splitName("test"))

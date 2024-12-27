@@ -30,6 +30,35 @@ user [icon: user, color: yellow] {
   updatedAt Number
 }
 
+organizationMember {
+  _id ObjectId pk
+  userId String
+  firstName String
+  lastName String
+  email String
+  countryCode String
+  countryCodeEmoji String
+  organizationId String
+  organizationName String
+  status String
+  mobileNumber String
+  role String
+  organizationImage String
+  permission Object {project:Boolean,group:Boolean,cost:Boolean,truck:Boolean,hauler:Boolean}
+  joinedDate Number
+  subscripitonId String
+  subscripitionCancelDate Number
+  subscriptionIsCancel Boolean
+  subscriptionIsExpire Boolean
+  isSubscribe Boolean
+  isFreeTrial Boolean
+  freeTrailEnd Number
+  isFreeTrailEnd Boolean
+  planType String
+  createdAt Number
+  updatedAt Number
+}
+
 truckType [icon: truck, color: green] {
   _id ObjectId pk
   userId String
@@ -53,13 +82,16 @@ truck [icon: truck, color: orange] {
   haulerName String
   haulerId String
   truckId String
-  payRate {payRateId:String,chargeType:String,charge:Number,payRateDescription:String}
+  payRate Object {payRateId:String,chargeType:String,charge:Number,payRateDescription:String}
   truckTypeId String
   truckType String
   capacity Number
+  capacityType String
   organizationId String
   licencePlateNumber String
+  licencePlateImage String
   isAssigned Boolean
+  isDelete Boolean
   createdAt Number
   updatedAt Number
 }
@@ -68,14 +100,14 @@ project [icon: briefcase, color: blue] {
   _id ObjectId pk
   projectId String
   projectName String
-  location Object{type:String,coordinates:Number[]}
+  location Object {type:String,coordinates:Number[]}
   address String
   zipCode String
   country String
   state String
   userId String
   organizationId String
-  isDeleted String
+  isDelete String
   createdAt Number
   updatedAt Number
 }
@@ -84,6 +116,7 @@ organization [icon: building, color: purple] {
   _id ObjectId pk
   userId String
   organizationImage String
+  role String
   uniqueId String
   createdAt Number
   updatedAt Number
@@ -92,9 +125,21 @@ organization [icon: building, color: purple] {
 projectSharing [icon: share-2, color: teal] {
   _id ObjectId pk
   projectId String
-  organizationId String
-  sharedWithOrganizationId String
+  projectName String
+  access Object {isCost : Boolean}
   userId String
+  userName String
+  userRole String
+  organizationId String
+  organizationName String
+  organizationRole String
+  accessUserId String
+  accessUserName String
+  accessOrganizationId String
+  accessOrganizationName String
+  accessOrganizationRole String
+  status String
+  joinedDate Number
   createdAt String
   updatedAt String
 }
@@ -120,7 +165,6 @@ subscription [icon: credit-card, color: red] {
   isSubscriptionOver Boolean
   isFreeTrialEnd Boolean
   freeTrialEnd Number
-  invoiceUrl String
   planType String
   status String
   createdAt Number
@@ -131,24 +175,43 @@ payRate [icon: dollar-sign, color: cyan] {
   _id ObjectId pk
   userId String
   organizationId String
+  haulerId String
+  haulerName String
   payRateDescription String
   chargeType String
   charge Number
-  isDeleted Boolean
+  isDelete Boolean
   createdAt Number
   updatedAt Number
 }
 
-hauler [icon: truck, color: brown] {
+ContractorHaulerRelationship [icon: truck, color: brown] {
   _id ObjectId pk
-  userId String
-  haulerName String
-  haulerEmail String
+  contractorId String,
+  contractorFirstName String
+  contractorLastName String
+  contractorMobileNumber String
+  contractorEmail String
+  contractorOrganizationId String
+  contractorOrganizationName String
+  contractorOrganizationUniqueId String
+  contractorCountryCode String
+  contractorCountryCodeEmoji String
+
+  haulerId String
+  haulerFirstName String
+  haulerLastName String
   haulerMobileNumber String
+  haulerEmail String
+  haulerOrganizationId String
+  haulerOrganizationName String
+  haulerOrganizationUniqueId String
   haulerCountryCode String
   haulerCountryCodeEmoji String
-  organizationId String
-  isDeleted Boolean
+
+  status String
+  joinedDate Number
+  deletedBy String
   createdAt Number
   updatedAt Number
 }
@@ -160,7 +223,7 @@ group [icon: users, color: pink] {
   groupId String
   groupName String
   isActive Boolean
-  isDeleted Boolean
+  isDelete Boolean
   createdAt Number
   updatedAt Number
 }
@@ -189,17 +252,6 @@ admin [icon: shield, color: gray] {
   updatedAt Number
 }
 
-bulletin [icon: message-circle, color: lightblue] {
-  _id ObjectId pk
-  senderUserId String
-  receiverUserId String
-  organizationId String
-  mobileNumber String
-  isRead String
-  message Object{en:String,es:String,fr:String}
-  createdAt Number
-  updatedAt Number
-}
 
 countryCode [icon: flag, color: lightgreen] {
   _id ObjectId pk
@@ -231,22 +283,57 @@ device [icon: smartphone, color: lightcoral] {
 
 notification [icon: bell, color: lightgoldenrodyellow] {
   _id ObjectId pk
-  senderUserId String
+  type String
+  senderUserId String 
+  senderUserName String
+  senderUserRole String
+  senderUserOrganizationId String 
+  senderUserOrganizationName String 
+  senderUserOrganizationImage String
+
   receiverUserId String
-  organizationId String
-  firstName String
-  lastName String
-  role String
-  mobileNumber String
-  planType String
-  recieverUserEmail String
-  joinedDate Number
-  countryCode String
-  countryCodeEmoji String
-  access Object{project:Boolean,group:Boolean,cost:Boolean,truck:Boolean,hauler:Boolean}
+  receiverUserName String
+  receiverUserRole String
+  receiverUserMobileNumber String
+  receiverOrganizationId String
+  receiverOrganizationName String
+  receiverOrganizationImage String
+  // for the user_invite
+  organizationMemberId String
+  // for contractor hauler relationship
+  relationshipId String
+  // for projectSharing
+  projectSharingId String
+  projectId String
+  projectName String
+
+  message Object {en:"message",es:"message",fr: "message",}
+
+  isActionable Boolean // for notification has action or not
   status String
   createdAt Number
   updatedAt Number
+}
+
+Stripe [icon:payment , color:blue]{
+    _id ObjectId pk
+    userId String
+    organizationId String
+    isPending Boolean
+    amount Number  
+    planAmount Number
+    tax Number
+    sessionId String
+    subscriptionId String
+    paymentId String
+    subscribeAt Number
+    subscribeEnd Number
+    slot Number
+    freeTrailEnd Number
+    planType String
+    status String
+    createdAt Number
+    updatedAt Number
 }
 
 transaction [icon: file-text, color: lightseagreen] {
@@ -269,6 +356,7 @@ transaction [icon: file-text, color: lightseagreen] {
   tax Number
   planType String
   invoiceUrl String
+  status String
   createdAt Number
   updatedAt Number
 }
@@ -280,8 +368,9 @@ cost [icon: dollar-sign, color: lightsteelblue] {
   measurement String
   costAccount String
   unitBudget String
+  costAccountName String
   isActive Boolean
-  isDeleted Boolean
+  isDelete Boolean
   createdAt Number
   updatedAt Number
 }
@@ -289,8 +378,12 @@ cost [icon: dollar-sign, color: lightsteelblue] {
 clockOut [icon: clock, color: lightpink] {
   _id ObjectId pk
   userId String
+  userName String
+  timeCardId String
   userCreatedDate Number
+  userRole String
   organizationId String
+  organizationName String
   clockinId String
   projectId String
   truckId String
@@ -298,8 +391,14 @@ clockOut [icon: clock, color: lightpink] {
   truckType String
   totalCost Number
   gainOrLoss Number
-  goupId String
+  groupId String
   costId String
+  costAccount String
+  costAccountName String
+  group String
+  groupName String
+  project String
+  projectName String
   loadCount Number
   truckDriverTicket String
   truckDriverTicketImage String
@@ -308,14 +407,15 @@ clockOut [icon: clock, color: lightpink] {
   notes String
   clockOutTime Number
   clockInTime Number
+  haulerName String
+  truck String
   totalTime Number
   charge Number
-  timecardId String
+  timeCardDate Number
   costUnitBudget Number
-  costMeasurement Number
+  costMeasurement String
   paymentUnit String
   manuallyEnteredLoad Boolean
-  quantity Number
   totalLoad Number
   totalQuantity Number
   createdAt Number
@@ -327,6 +427,7 @@ loadCapture [icon: upload, color: lightcyan] {
   userId String
   clockinId String
   organizationId String
+  organizationName String
   truckId String
   clockOutId String
   isDeleted String
@@ -340,39 +441,39 @@ loadCapture [icon: upload, color: lightcyan] {
 clockIn [icon: clock, color: lightyellow] {
   _id ObjectId pk
   userId String
+  userName String
+  userRole String
   organizationId String
+  organizationName String
   groupId String
   costId String
   projectId String
   description String
   costAccount String
   timecardId String
+  costAccountName String
   costUnitBudget Number
   costMeasurement String
+  group String
+  groupName String
+  project String
+  projectName String
   clockinTime Number
   totalTruck Number
   paymentUnit String
-  truckId String
+//   truckId String
   truckType String
   truckDetail Array[{truckId: String, truckType: String, haulerName: String, haulerId: String truck: String, isClockOut: Boolean, clockInTime: Number, loadCount: Number, timeAdjustment: Number, truckDriverTicket :String ,additionalDocuments :String, notes :String, truckDriverTicketImage: String}]
   createdAt Number
   updatedAt Number
 }
 
-subscriptionPlans [icon:credit-card,color:blue]{
-  _id ObjectId pk
-  userId String
-  actualPrice Number
-  currentPrice Number
-  subscriptionPeriod String
-  subscriptionDescription String
-  billingDescripiton String
-  createdAt Number
-  updatedAt Number
-}
 projectMember[icon:users,color:tan]{
   _id ObjectId pk
   projectId String
+  projectUniqueId String
+  projectName String
+  projectCreatedBy String
   organizationId String
   userId String
   firstName String
@@ -382,6 +483,7 @@ projectMember[icon:users,color:tan]{
   countryCode String
   countryCodeEmoji String
   email String
+  profileImage String
   Status String
   createdAt Number
   updatedAt Number
@@ -395,7 +497,46 @@ feedback [icon:comment,color:goldenrod]{
   role String
   feedBack String
   star Number
-  isDeleted Boolean
+  isDelete Boolean
+  createdAt Number
+  updatedAt Number
+}
+truckPayRate [icon:truck,color:gold]{
+  _id ObjectId pk
+  haulerProjectId String
+  haulerProjectName String
+  haulerOrganizatinName String
+  haulerOrganizatinId String
+  contractorOrganizatinName String
+  contractorOrganizatinId String
+  truck Number
+  truckId String
+  truckTypeId String
+  truckType String
+  capacity Number
+  capacityTye String
+  AssignedById String
+  AssignedByName  String
+  AssignedByRole String
+  payRate Object {payRateId:String,chargeType:String,charge:Number,payRateDescription:String}
+  isDelete Boolean
+  isAssigned Boolean
+  createdAt Number
+  updatedAt Number
+}
+
+shareCode [icon:share,color:red]{
+  _id Object pk
+  tickets Array[String]
+  createdById String
+  createdByName String
+  createdByRole String
+  approvedById String
+  approvedByName String
+  approvedByRole String
+  expiredAt Number
+  qrCodeImage String
+  isImage String
   createdAt Number
   updatedAt Number
 }
@@ -408,27 +549,30 @@ user._id > organization.userId
 user._id > projectSharing.userId
 user._id > subscription.userId
 user._id > payRate.userId
-user._id > hauler.userId
 user._id > group.userId
 user._id > admin.userId
-user._id > bulletin.senderUserId
 user._id > device.userId
 user._id > notification.senderUserId
+user._id > notification.receiverUserId
 user._id > transaction.userId
 user._id > cost.userId
 user._id > clockOut.userId
 user._id > loadCapture.userId
 user._id > clockIn.userId
-user._id > subscriptionPlans.userId
 user._id > projectMember.userId
 user._id > feedback.userId
+user._id > organizationMember.userId
+user._id > Stripe.userId
+user._id > truckPayRate.AssignedById
+user._id > ContractorHaulerRelationship.contractorId
+user._id > ContractorHaulerRelationship.haulerId
+user._id > shareCode.createdById
+user._id > shareCode.approvedById
 organization._id > project.organizationId
 organization._id > projectSharing.organizationId
 organization._id > subscription.organizationId
 organization._id > payRate.organizationId
-organization._id > hauler.organizationId
 organization._id > group.organizationId
-organization._id > bulletin.organizationId
 organization._id > notification.organizationId
 organization._id > transaction.organizationId
 organization._id > cost.organizationId
@@ -436,8 +580,19 @@ organization._id > clockOut.organizationId
 organization._id > loadCapture.organizationId
 organization._id > clockIn.organizationId
 organization._id > projectMember.organizationId
+organization._id > organizationMember.organizationId
+organization._id > Stripe.organizationId
+organization._id > truckPayRate.haulerOrganizatinId
+organization._id > truckPayRate.contractorOrganizatinId
+organization._id > ContractorHaulerRelationship.contractorOrganizationId
+organization._id > ContractorHaulerRelationship.haulerOrganizationId
+organization._id > notification.senderUserOrganizationId
+organization._id > notification.receiverOrganizationId
 truckType._id > truck.truckTypeId
+truckType._id > truckPayRate.truckTypeId
+truck._id > truckPayRate.truckId
 project._id > projectSharing.projectId
 project._id > clockOut.projectId
 project._id > clockIn.projectId
 project._id > projectMember.projectId
+project._id > truckPayRate.haulerProjectId
