@@ -229,9 +229,9 @@ db.once("open", async function () {
                 const receiverData = await User.findOne({ mobileNumber: notification?.["mobileNumber"] }).select("_id firstName lastName role").exec()
                 const receiverOrganizationData = await Organization.findOne({ userId: String(receiverData?.["_id"]) });
 
-                const orgMemeber= await OrgMember.findOne({$or:[{userId:notification?.["receiverUserId"]},{mobileNumber:notification?.["mobileNumber"]}],organizationId:notification?.["organizationId"]}).select("_id");
+                const orgMember= await OrgMember.findOne({$or:[{userId:notification?.["receiverUserId"]},{mobileNumber:notification?.["mobileNumber"]}],organizationId:notification?.["organizationId"]}).select("_id");
 
-                if (senderOrganizationData && senderData) {
+                if (senderOrganizationData && senderData && orgMember) {
                     const newNotificationData = {}
                     newNotificationData["type"] = "user_invite";
                     newNotificationData["status"] = notification["status"];
@@ -248,7 +248,7 @@ db.once("open", async function () {
                     newNotificationData["receiverUserOrganizationId"] = String(receiverOrganizationData?.["_id"]) || null;
                     newNotificationData["receiverUserOrganizationName"] = String(receiverOrganizationData?.["organizationName"]) || null;
                     newNotificationData["receiverUserOrganizationImage"] = receiverOrganizationData?.["organizationImage"] || null;
-                    newNotificationData["organizationMemberId"] = String(orgMemeber?.["_id"])
+                    newNotificationData["organizationMemberId"] = String(orgMember?.["_id"])
                     newNotificationData["isActionable"] = notification["status"] == "Requested" ? true :false;
                     newNotificationData["message"] = {
                         "en": "You've been invited to join the organization.",
@@ -256,7 +256,7 @@ db.once("open", async function () {
                         "es": "Has sido invitado a unirte a la organización."
                     }
                     console.log(newNotificationData)
-                    // promise.push(await notification.replaceOne({_id:notification["_id"],newNotificationData}))
+                    // promise.push(await notification.replaceOne({_id:notification["_id"]},newNotificationData))
                 } else {
                     console.log("organization not found !!");
                 }
@@ -278,3 +278,30 @@ db.once("open", async function () {
     // Run the migration
     migrateNotificationData();
 });
+
+// ----------- Data After Migration ------------
+
+// {
+//     type: 'user_invite',
+//     status: 'Accepted',
+//     senderUserId: '666d93448f19bf89341bfd8f',
+//     senderUserRole: 'Contractor',
+//     senderUserName: 'Meet1 Ribadiya',
+//     senderUserOrganizationId: '666d93778f19bf89341cb653',
+//     senderUserOrganizationName: 'Meet Organisations ',
+//     senderUserOrganizationImage: 'https://hihand-images.s3.us-east-2.amazonaws.com/organizationImage/8134291720010221678.jpg',
+//     receiverUserId: '666d93448f19bf89341bfd8f',
+//     receiverUserRole: 'Contractor',
+//     receiverUserName: 'Meet1 Ribadiya',
+//     receiverUserMobileNumber: '9727576732',
+//     receiverUserOrganizationId: '666d93778f19bf89341cb653',
+//     receiverUserOrganizationName: 'Meet Organisations ',
+//     receiverUserOrganizationImage: 'https://hihand-images.s3.us-east-2.amazonaws.com/organizationImage/8134291720010221678.jpg',
+//     organizationMemberId: 'undefined',//organizationMemberID After the run the script of organization member
+//     isActionable: false,
+//     message: {
+//       en: "You've been invited to join the organization.",
+//       fr: "Vous avez été invité à rejoindre l'organisation.",
+//       es: 'Has sido invitado a unirte a la organización.'
+//     }
+// }

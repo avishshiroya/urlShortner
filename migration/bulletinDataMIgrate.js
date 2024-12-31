@@ -258,7 +258,7 @@ db.once("open", async function () {
                     newNotificationData["senderUserOrganizationId"] = String(senderOrganizationData["_id"]);
                     newNotificationData["senderUserOrganizationName"] = String(senderOrganizationData["organizationName"]);
                     newNotificationData["senderUserOrganizationImage"] = senderOrganizationData["organizationImage"];
-                    newNotificationData["receiverUserId"] = receiverData ? String(receiverData["_id"]) : null;
+                    newNotificationData["receiverUserId"] = receiverData ? String(receiverData["_id"]) : bulletin["receiverUserId"];
                     newNotificationData["receiverUserRole"] = "Contractor";
                     newNotificationData["receiverUserName"] = receiverData["firstName"] ? `${receiverData["firstName"]} ${receiverData["lastName"]}` :null;
                     newNotificationData["receiverUserMobileNumber"] = bulletin["mobileNumber"];
@@ -288,3 +288,27 @@ db.once("open", async function () {
     };
     migrateBulletinData();
 });
+
+// ------------ Data After Migrate ------------
+// {
+//     type: 'default_notification',
+//     senderUserId: '667d66c39ad0f5dcfd0d22f2',
+//     senderUserRole: 'Contractor',
+//     senderUserName: 'sneha panchal',
+//     senderUserOrganizationId: '667d67109ad0f5dcfd0e4039',
+//     senderUserOrganizationName: 'Crawlapps',
+//     senderUserOrganizationImage: 'https://hihand-images.s3.us-east-2.amazonaws.com/organizationImage/17195513188567924.jpg',
+//     receiverUserId: '667e3e0e4e04452224921f6e',
+//     receiverUserRole: 'Contractor',
+//     receiverUserName: 'Arvi patel',
+//     receiverUserMobileNumber: '7404630034',
+//     receiverUserOrganizationId: '667e3e784e04452224939107',
+//     receiverUserOrganizationName: 'Walmart',
+//     receiverUserOrganizationImage: 'https://hihand-images.s3.us-east-2.amazonaws.com/organizationImage/17195552345522819.jfif',
+//     isActionable: false,
+//     message: {
+//       en: "You've been invited to join the organization.",
+//       fr: "You've been invited to join the organization.",
+//       es: "You've been invited to join the organization."
+//     }
+// }

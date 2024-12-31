@@ -241,3 +241,32 @@ db.once("open", async function () {
   // Run the migration
   migrateHaulerData();
 });
+
+
+// ------------- DATA After Migrate --------------
+// {
+//   contractorId: '66c40fcfd43409d944d91a46',
+//   contractorFirstName: 'Jiyaa',
+//   contractorLastName: 'Sinha',
+//   contractorMobileNumber: '99680075480',
+//   contractorEmail: 'jiyaa123@gmail.com',
+//   contractorOrganizationId: '66c41075cff5ba33c6bf3ce1',
+//   contractorOrganizationName: 'Jiya’s Organization',
+//   contractorOrganizationUniqueId: '5RANW1M93MVWVP',
+//   contractorCountryCode: '+91',
+//   contractorCountryCodeEmoji: null,
+//   haulerId: null,
+//   haulerFirstName: 'Hauler',
+//   haulerLastName: '5',
+//   haulerMobileNumber: '9968532758',
+//   haulerEmail: null,
+//   haulerOrganizationId: null,
+//   haulerOrganizationName: null,
+//   haulerOrganizationUniqueId: null,
+//   haulerCountryCode: '+91',
+//   haulerCountryCodeEmoji: 'https://flagcdn.com/w160/in.png',
+//   status: 'Accepted',
+//   joinedDate: 1724134344745,
+//   deletedBy: null,
+//   createdBy: '66c40fcfd43409d944d91a46'
+// }
