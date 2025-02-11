@@ -49,3 +49,17 @@ npm install --save-dev eslint @typescript-eslint/parser @typescript-eslint/eslin
 After adding these files and installing the dependencies, try running `npm run lint` again. The error should be resolved.
 
 Would you like me to explain any part of this configuration in more detail?
+
+
+
+---------------------------
+
+
+### Error : - TS7056
+
+#### change tsconfig.json
+```json
+{
+  declaration:false
+}
+```
