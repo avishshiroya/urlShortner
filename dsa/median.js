@@ -1925,15 +1925,223 @@ function splitName(name) {
             secondPart: ''
         };
     }
-    
+
     const firstSpace = name.indexOf(' ');
     const firstPart = name.substring(0, firstSpace);
     const secondPart = name.substring(firstSpace + 1);
-    
+
     return {
         firstPart,
         secondPart
     };
 }
 
-console.log( splitName("test"))
+// console.log( splitName("test"))
+
+var maxScore = (s) => {
+    let max = 0
+    let left = 0;
+    let right = 1;
+    while (left < right && right !== s.length) {
+        let score = 0;
+        let rightString = String(s).substring(right, s.length);
+        let leftString = String(s).substring(0, left + 1);
+        if (rightString.length === 0) {
+            score += countString(leftString, 0)
+            break;
+        }
+        else if (leftString.length === 0) {
+            score += countString(rightString, 1)
+            break;
+        }
+        else {
+            score += countString(leftString, 0) + countString(rightString, 1)
+            left++;
+            right++;
+        }
+        max = Math.max(max, score);
+    }
+    return max
+}
+function countString(str, letter) {
+    let count = 0;
+
+    // looping through the items
+    for (let i = 0; i < str.length; i++) {
+
+        // check if the character is at that position
+        if (str.charAt(i) == letter) {
+            count += 1;
+        }
+    }
+    return count;
+}
+// console.log(maxScore("011101"))
+var vowelStrings = function (words, queries) {
+    const ans = [];
+    const vowels = new Set(['a', 'e', 'i', 'o', 'u']);
+    for (let query of queries) {
+        let totalMatch = 0;
+        for (let i = query[0]; i <= query[1]; i++) {
+            let last = words[i].length - 1
+            if (vowels.has(words[i][0]) && vowels.has(words[i][last])) {
+                totalMatch++;
+            }
+        }
+        ans.push(totalMatch);
+    }
+    return ans;
+};
+
+// console.log(vowelStrings(["aba","bcb","ece","aa","e"],[[0,2],[1,4],[1,1]]))
+
+var longestCommonPrefix = function (strs) {
+    let prefix = "";
+    let maxLength = 0;
+    let maxLengthWord = 0;
+    for (let str of strs) {
+        if (str.length > maxLength) {
+            maxLength = str.length;
+            maxLengthWord = Array(strs).indexOf(str);
+        }
+    }
+    for (let char of strs[maxLengthWord]) {
+        console.log(char);
+    }
+
+};
+// console.log(longestCommonPrefix(["flower","flowsgvf","flight"]))    
+
+var waysToSplitArray = function (nums) {
+    let splits = 0;
+    let totalSum = 0;
+    let leftSum = 0;
+    for (let num of nums) {
+        totalSum += num;
+    }
+    for (let i = 0; i < nums.length - 1; i++) {
+        totalSum -= nums[i];
+        leftSum += nums[i];
+        if (leftSum >= totalSum) {
+            splits++;
+        }
+    }
+    return splits;
+};
+// console.log(waysToSplitArray([10,4,-8,7]))
+
+var countPrefixSuffixPairs = function (words) {
+    let match = 0;
+    if (words.length < 2) return 0;
+    for (let i = 0; i < words.length - 1; i++) {
+        let prefix = words[i];
+        for (let j = i + 1; j < words.length; j++) {
+            let suffix = words[j];
+            if (suffix.startsWith(prefix) && suffix.endsWith(prefix)) {
+                match++;
+            }
+        }
+    }
+    return match
+};
+// console.log(countPrefixSuffixPairs(["a", "aba", "ababa", "aa"]))
+
+var xorAllNums = function (nums1, nums2) {
+    let x1 = 0, x2 = 0;
+    if (nums1.length % 2 !== 0) {
+        for (let num of nums2) {
+            x2 ^= num;
+        }
+    }
+    if (nums2.length % 2 !== 0) {
+        for (let num of nums1) {
+            x1 ^= num;
+        }
+    }
+    return x1 ^ x2;
+};
+// console.log(xorAllNums([2, 1, 3], [10, 2, 5, 0]))
+
+var countServers = function (grid) {
+    let rows = grid.length;
+    let cols = grid[0].length
+    let servers = 0;
+    const map = Array.from({ length: row }, () => Array(col).fill(false));
+    let directions = [[-1, 0], [0, 1], [+1, 0], [1, 0]]
+    for (let row = 0; row < rows; row++) {
+        for (let col = 0; col < cols; col++) {
+
+        }
+    }
+};
+// console.log(countServers([[1, 1, 0, 0], [0, 0, 1, 0], [0, 0, 1, 0], [0, 0, 0, 1]]))
+var eventualSafeNodes = function (graph) {
+    let safeNodes = [];
+    for (let i = graph.length - 1; i >= 0; i--) {
+        if (graph[i].length == 0) {
+            safeNodes.push(i)
+        }
+    }
+    // console.log(safeNodes);
+    for (let i = 0; i < graph.length; i++) {
+        for (let j = 0; i < graph[i].length; j++) {
+
+        }
+    }
+    return safeNodes.sort()
+};
+// if (!safeNodes.includes[i]) {
+//     // console.log("Check is include",graph[i].length,i,graph[i].length == 1,graph[i][0],safeNodes.includes[graph[i][0]]);
+//     if (graph[i].length == 1) {
+//         if (safeNodes.includes(graph[i][0])) {
+//             safeNodes.push(i)
+//         }
+//     }
+// }
+// console.log(eventualSafeNodes([[], [0, 2, 3, 4], [3], [4], []]))
+
+
+
+var checkIfPrerequisite = function (numCourses, prerequisites, queries) {
+    const isPrerequisite = []
+    const exists = (target) => prerequisites.some(innerArray =>
+        JSON.stringify(innerArray) === JSON.stringify(target)
+    );
+    for (let i = 0; i < queries.length; i++) {
+        console.log(exists(queries[i]));
+        if (exists(queries[i])) {
+            isPrerequisite.push(true)
+        }
+        else {
+            isPrerequisite.push(false)
+        }
+    }
+    return isPrerequisite
+};
+// checkIfPrerequisite(
+//    3,
+//    [[1,2],[1,0],[2,0]],
+//    [[1,0],[1,2]]
+// )
+
+var findRedundantConnection = function (edges) {
+    const set = new Map();
+    const ans = [];
+    for (let i = 0; i < edges.length; i++) {
+        const [u, v] = edges[i];
+        if (set.has(["x", u]) && set.has(["y", v])) {
+            ans.push([u, v])
+        }
+        else {
+            if (!set.has(u)) set.set(["x", u])
+            if (!set.has(v)) set.set(["y", v])
+        }
+    };
+    return ans[ans.length - 1]
+}
+
+var maxAscendingSum = function(nums) {
+    
+};
+
+console.log(n)

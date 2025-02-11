@@ -14,3 +14,22 @@ for check the email (not valid fake mail)
 
 - Two Types of Edges Weight : 1). Weighted 2). Un-Weighted
 
+
+
+
+
+                projectOwner(H1)- primary Hauler
+                /\        \
+               H2 H7       C1 (Primary Contractor)
+               /\           /\
+             H3 H4         C2 C3
+             /   \         /
+            H5   H6       C4
+            /
+           H8
+
+           - in this case H is Hauler & C is Contractor
+           - when we get the clockin tickets of the H2 then we get the all childs tickets and get the creator name as primary child. for H2 primary childs are H3 and H4 and same for the all hauler level
+           - in contractor primary contractor can see the H1 as a ticket creator but C2 and C3 see C1 as a ticker creator and C4 see the C3.
+
+           - for this create a schema for the project sharing

@@ -1,6 +1,6 @@
 const mongoose = require("mongoose");
 const { Schema, Types } = mongoose;
-const mongoURI = "mongodb+srv://avishshiroyacrawlapps:07T7lBLs3b4TEO8c@cluster0.wrfql.mongodb.net/myTruckBoss?retryWrites=true&w=majority&appName=Cluster0";
+const mongoURI = "mongodb+srv://avishshiroyacrawlapps:QUekVO5GkkHjar25@cluster0.jqeuo.mongodb.net/myTruckBoss?retryWrites=true&w=majority&appName=Cluster0";
 
 // Connect to MongoDB
 mongoose.connect(mongoURI);
@@ -227,14 +227,14 @@ db.once("open", async function () {
 
     async function migrateBulletinData() {
         try {
-            // const migrationRecord = await Migration.findOne({ migrationName }).exec();
-            // if (migrationRecord) {
-            //     console.log("Migration has already been executed.");
-            //     return;
-            // }
-            // await new Migration({ migrationName }).save();
+            const migrationRecord = await Migration.findOne({ migrationName }).exec();
+            if (migrationRecord) {
+                console.log("Migration has already been executed.");
+                return;
+            }
+            await new Migration({ migrationName }).save();
 
-            const bulletinData = await Bulletin.find({ isActionable: { $exists: false } });
+            const bulletinData = await Bulletin.find();
             // console.log(bulletinData);
             let promise = []
             for (let index = 0; index < bulletinData.length; index++) {
@@ -268,16 +268,16 @@ db.once("open", async function () {
                     newNotificationData["isActionable"] =  false;
                     newNotificationData["message"] = bulletin["message"]
                     console.log(newNotificationData)
-                    // promise.push(await bulletin.create(newNotificationData))
+                    promise.push(await Notification.create(newNotificationData))
                 } else {
                     console.log("organization not found !!");
                 }
             }
 
 
-            // await Promise.all(promise).then(() => {
-            //     console.log("Bulletins updated successfully");
-            // });
+            await Promise.all(promise).then(() => {
+                console.log("Bulletins updated successfully");
+            });
         } catch (error) {
             console.log("Error Occured:-", error);
         } finally {

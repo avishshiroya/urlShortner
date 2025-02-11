@@ -26,3 +26,10 @@
                         "fr": "Vous avez été invité à rejoindre l'organisation.",
                         "es": "Has sido invitado a unirte a la organización."
                     }
+
+
+
+                        mongodump --uri "mongodb+srv://avishshiroyacrawlapps:07T7lBLs3b4TEO8c@cluster0.wrfql.mongodb.net/myTruckBoss?retryWrites=true&w=majority&appName=Cluster0" --out /path/to/backup/
+                        mongorestore --uri "mongodb+srv://avishshiroyacrawlapps:QUekVO5GkkHjar25@cluster0.jqeuo.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0" /tmp/mongodb_backup/
+
+

@@ -148,116 +148,138 @@ interface AccessRights {
 // // Add indexes for better query performance
 // ProjectSharingSchema.index({ projectId: 1, accessUserId: 1 }, { unique: true });
 // ProjectSharingSchema.index({ 'sharingChain.userId': 1 });
-
 interface AccessRights {
-    costAccount: boolean;
-    unitBudget: boolean;
-    paymentOfUnit: boolean;
+        
 }
 
-@Schema()
-export class ProjectSharing {
-    _id: mongoose.Types.ObjectId;
 
-    @Prop({ required: true })
-    projectId: string;
-
-    @Prop()
-    projectName: string;
-
-    @Prop({
-        type: {
-            costAccount: Boolean,
-            unitBudget: Boolean,
-            paymentOfUnit: Boolean
-        }
-    })
-    access: AccessRights;
-
-    // Original user who created the project
-    @Prop({ required: true })
-    rootUserId: string;
-
-    @Prop()
-    rootUserName: string;
-
-    @Prop()
-    rootUserRole : string;
-
-    // User who granted access
-    @Prop({ required: true })
-    grantedByUserId: string;
-
-    @Prop()
-    grantedByUserName: string;
-    
-    @Prop()
-    grantedByUserRole: string;
-
-    // User who received access
-    @Prop({ required: true })
-    accessUserId: string;
-
-    @Prop()
-    accessUserName: string;
-
-    @Prop()
-    accessUserRole: string;
-
-    @Prop({ required: true })
-    organizationId: string;
-
-    @Prop()
-    organizationName: string;
-
-    @Prop()
-    hierarchyLevel : Number
-
-    @Prop({ enum: inviteStatusEnum, default: inviteStatusEnum.Requested })
-    status: inviteStatusEnum;
-
-    @Prop({ default: () => new Date().getTime() })
-    createdAt: number;
-
-    @Prop({ default: () => new Date().getTime() })
-    updatedAt: number;
-}
-
-export const ProjectSharingSchema = SchemaFactory.createForClass(ProjectSharing);
-
-// Add indexes for better query performance
-ProjectSharingSchema.index({ projectId: 1, accessUserId: 1 }, { unique: true });
-ProjectSharingSchema.index({ 'sharingChain.userId': 1 });
-
-
- // this function work for the add theshowableName in the tickets without memoization
-  // async addShowableName(data, receiverOrganizationId, receiverUserName, childOrganizations) {
-  //   return data.map(record => {
-  //     let showableName = "";
-
-  //     // Find matching child organization
-  //     const childOrg = childOrganizations.find(
-  //       org => org.childOrganizationId === record.organizationId
-  //     );
-
-  //     // Determine showableName based on rules
-  //     if (record.organizationId === receiverOrganizationId) {
-  //       // Rule 1: Requestor's Tickets
-  //       showableName = receiverUserName;
-  //     } else if (childOrg) {
-  //       if (childOrg.primaryUser) {
-  //         // Rule 2: Primary User's Tickets
-  //         showableName = childOrg.childName;
-  //       } else {
-  //         // Rule 3: Child Organization's Tickets
-  //         showableName = childOrg ? childOrg.parentName : "Unknown";
-  //       }
-  //     } else {
-  //       // Default if no matching rule
-  //       showableName = "N/A";
-  //     }
-
-  //     // Return the updated record
-  //     return { ...record.toObject(), showableName };
-  //   });
-  // }
+let projectId,userId,limit,page
+const pipeline = [
+    // Step 1: Match the projectId and userId in the childOrgs array
+    {
+      $match: {
+        projectId: projectId,
+        accessUserId: userId
+      }
+    },
+    // Step 2: Unwind childOrgs array for easier processing
+    {
+      $unwind: "$childOrgs"
+    },
+    // Step 3: Separate primary child organizations
+    {
+      $facet: {
+        primaryChildren: [
+          {
+            $match: {
+              "childOrgs.parentId": userId
+            }
+          },
+          {
+            $group: {
+              _id: "$childOrgs.organizationId",
+              userId: { $first: "$childOrgs.userId" }
+            }
+          }
+        ],
+        restChildren: [
+          {
+            $match: {
+              "childOrgs.userId": { $ne: userId }
+            }
+          },
+          {
+            $group: {
+              _id: "$childOrgs.parentId",
+              children: {
+                $push: {
+                  childUserId: "$childOrgs.userId"
+                }
+              }
+            }
+          }
+        ]
+      }
+    },
+    // Step 4: Lookup tickets based on primary child organizations
+    {
+      $lookup: {
+        from: "tickets", // Tickets collection
+        let: {
+          primaryChildIds: "$primaryChildren._id",
+          userId: userId
+        },
+        pipeline: [
+          {
+            $match: {
+              $expr: {
+                $or: [
+                  { $eq: ["$creatorId", "$$userId"] },
+                  { $in: ["$creatorId", "$$primaryChildIds"] }
+                ]
+              }
+            }
+          },
+          { $sort: { createdAt: -1 } }
+        ],
+        as: "tickets"
+      }
+    },
+    // Step 5: Project required fields for tickets and organization groups
+    {
+      $project: {
+        tickets: {
+          $map: {
+            input: "$tickets",
+            as: "ticket",
+            in: {
+              _id: "$$ticket._id",
+              title: "$$ticket.title",
+              description: "$$ticket.description",
+              createdAt: "$$ticket.createdAt",
+              creatorName: {
+                $let: {
+                  vars: {
+                    primaryChild: {
+                      $arrayElemAt: [
+                        {
+                          $filter: {
+                            input: "$primaryChildren",
+                            as: "child",
+                            cond: {
+                              $eq: ["$$child._id", "$$ticket.creatorOrganizationId"]
+                            }
+                          }
+                        },
+                        0
+                      ]
+                    }
+                  },
+                  in: {
+                    $ifNull: ["$$primaryChild.userName", "$$ticket.creatorName"]
+                  }
+                }
+              }
+            }
+          }
+        },
+        groupedChildren: "$restChildren"
+      }
+    },
+    // Step 6: Add pagination
+    {
+      $addFields: {
+        totalTickets: { $size: "$tickets" }
+      }
+    },
+    {
+      $project: {
+        tickets: {
+          $slice: ["$tickets", (page - 1) * limit, limit]
+        },
+        groupedChildren: 1,
+        totalTickets: 1
+      }
+    }
+  ];
+  

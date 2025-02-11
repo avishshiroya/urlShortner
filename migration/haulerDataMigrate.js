@@ -1,6 +1,6 @@
 const mongoose = require("mongoose");
 const { Schema, Types } = mongoose;
-const mongoURI = "mongodb+srv://avishshiroyacrawlapps:07T7lBLs3b4TEO8c@cluster0.wrfql.mongodb.net/myTruckBoss?retryWrites=true&w=majority&appName=Cluster0";
+const mongoURI = "mongodb+srv://avishshiroyacrawlapps:QUekVO5GkkHjar25@cluster0.jqeuo.mongodb.net/myTruckBoss?retryWrites=true&w=majority&appName=Cluster0";
 
 // Connect to MongoDB
 mongoose.connect(mongoURI);
@@ -12,26 +12,31 @@ db.once("open", async function () {
 
   // relationship schema
   const relationshipSchema = new mongoose.Schema({
-    contractorId: { type: String, default: null },
-    contractorFirstName: { type: String, default: null },
-    contractorLastName: { type: String, default: null },
-    contractorMobileNumber: String,
-    contractorEmail: { type: String, default: null },
-    contractorOrganizationId: { type: String, default: null },
-    contractorOrganizationName: String,
-    contractorOrganizationUniqueId: { type: String, default: null },
-    contractorCountryCode: String,
-    contractorCountryCodeEmoji: String,
-    haulerId: { type: String, default: null },
-    haulerFirstName: { type: String, default: null },
-    haulerLastName: { type: String, default: null },
-    haulerMobileNumber: String,
-    haulerEmail: { type: String, default: null },
-    haulerOrganizationId: { type: String, default: null },
-    haulerOrganizationName: String,
-    haulerOrganizationUniqueId: { type: String, default: null },
-    haulerCountryCode: String,
-    haulerCountryCodeEmoji: String,
+    relationshipType: { type: String },
+    initiatorId: { type: String, default: null },
+    initiatorFirstName: { type: String, default: null },
+    initiatorLastName: { type: String, default: null },
+    initiatorMobileNumber: String,
+    initiatorEmail: { type: String, default: null },
+    initiatorOrganizationId: { type: String, default: null },
+    initiatorOrganizationName: String,
+    initiatorOrganizationUniqueId: { type: String, default: null },
+    initiatorOrganizationImage: { type: String, default: null },
+    initiatorCountryCode: String,
+    initiatorCountryCodeEmoji: String,
+    initiatorRole: String,
+    recipientId: { type: String, default: null },
+    recipientFirstName: { type: String, default: null },
+    recipientLastName: { type: String, default: null },
+    recipientMobileNumber: String,
+    recipientEmail: { type: String, default: null },
+    recipientOrganizationId: { type: String, default: null },
+    recipientOrganizationName: String,
+    recipientOrganizationImage: String,
+    recipientOrganizationUniqueId: { type: String, default: null },
+    recipientCountryCode: String,
+    recipientCountryCodeEmoji: String,
+    recipientRole: String,
     status: { type: String, default: "Accepted" },
     joinedDate: Number,
     deletedBy: String,
@@ -39,7 +44,7 @@ db.once("open", async function () {
     createdAt: { type: Number, default: () => new Date().getTime() },
     updatedAt: { type: Number, default: () => new Date().getTime() }
   })
-  const Relationship = mongoose.model("contractorhaulerrelationships", relationshipSchema);
+  const Relationship = mongoose.model("organizationrelationships", relationshipSchema);
 
   // hauler schema
   const haulerSchema = new mongoose.Schema({
@@ -195,33 +200,39 @@ db.once("open", async function () {
         if (organizationData && contractorData) {
           const haulerNames = splitName(hauler["haulerName"])
           const newRelationshipData = {
-            contractorId: String(contractorData["_id"]),
-            contractorFirstName: contractorData["firstName"],
-            contractorLastName: contractorData["lastName"],
-            contractorMobileNumber: contractorData["mobileNumber"],
-            contractorEmail: contractorData["email"],
-            contractorOrganizationId: String(organizationData["_id"]),
-            contractorOrganizationName: organizationData["organizationName"],
-            contractorOrganizationUniqueId: organizationData["uniqueId"],
-            contractorCountryCode: contractorData["countryCode"] || null,
-            contractorCountryCodeEmoji: contractorData["countryCodeEmoji"] || null,
-            haulerId: null,
-            haulerFirstName: haulerNames["firstName"] || null,
-            haulerLastName: haulerNames["secondName"] || null,
-            haulerMobileNumber: hauler["haulerMobileNumber"],
-            haulerEmail: hauler["haulerEmail"] || null,
-            haulerOrganizationId: null,
-            haulerOrganizationName: null,
-            haulerOrganizationUniqueId: null,
-            haulerCountryCode: hauler["haulerCountryCode"] || null,
-            haulerCountryCodeEmoji: hauler["haulerCountryCodeEmoji"] || null,
-            status: hauler["isDelete"] ? "Deactivated" : "Accepted",
+            relationshipType: "Contractor_Hauler",
+            initiatorId: String(contractorData["_id"]),
+            initiatorFirstName: contractorData["firstName"],
+            initiatorLastName: contractorData["lastName"],
+            initiatorMobileNumber: contractorData["mobileNumber"],
+            initiatorEmail: contractorData["email"],
+            initiatorOrganizationId: String(organizationData["_id"]),
+            initiatorOrganizationName: organizationData["organizationName"],
+            initiatorOrganizationUniqueId: organizationData["uniqueId"],
+            initiatorOrganizationImage: organizationData["organizationImage"],
+            initiatorCountryCode: contractorData["countryCode"] || null,
+            initiatorCountryCodeEmoji: contractorData["countryCodeEmoji"] || null,
+            initiatorRole: "Contractor",
+            recipientId: null,
+            recipientFirstName: haulerNames["firstName"] || null,
+            recipientLastName: haulerNames["secondName"] || null,
+            recipientMobileNumber: hauler["haulerMobileNumber"],
+            recipientEmail: hauler["haulerEmail"] || null,
+            recipientOrganizationId: null,
+            recipientOrganizationName: null,
+            recipientOrganizationUniqueId: null,
+            recipientOrganizationImage: null,
+            recipientCountryCode: hauler["haulerCountryCode"] || null,
+            recipientCountryCodeEmoji: hauler["haulerCountryCodeEmoji"] || null,
+            recipientRole: "Hauler",
+            status: hauler["isDelete"] ? "Deleted" : "Accepted",
             joinedDate: hauler["createdAt"],
             deletedBy: hauler["isDelete"] ? hauler["userId"] : null,
             createdBy: hauler["userId"],
           }
-          console.log(newRelationshipData)
-          // promise.push(await newRelationshipData.save())
+          // console.log(newRelationshipData)
+          console.log("Data Created  ",index)
+          await Relationship.create(newRelationshipData)
         } else {
           console.log("organization not found !!");
         }

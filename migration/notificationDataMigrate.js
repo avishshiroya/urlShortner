@@ -1,6 +1,6 @@
 const mongoose = require("mongoose");
 const { Schema, Types } = mongoose;
-const mongoURI = "mongodb+srv://avishshiroyacrawlapps:07T7lBLs3b4TEO8c@cluster0.wrfql.mongodb.net/myTruckBoss?retryWrites=true&w=majority&appName=Cluster0";
+const mongoURI = "mongodb+srv://avishshiroyacrawlapps:QUekVO5GkkHjar25@cluster0.jqeuo.mongodb.net/myTruckBoss?retryWrites=true&w=majority&appName=Cluster0";
 
 // Connect to MongoDB
 mongoose.connect(mongoURI);
@@ -163,7 +163,7 @@ db.once("open", async function () {
     //organization Member
     const OrgMemberSchema = new Schema({
         userId: String,
-        firstName : String,
+        firstName: String,
         lastName: String,
         email: String,
         mobileNumber: String,
@@ -172,22 +172,22 @@ db.once("open", async function () {
         organizationId: String,
         organizationName: String,
         organizationImage: String,
-        role:  String,
-        Status : String,
+        role: String,
+        status: String,
         permission: {
-          project: {type:Boolean, default: false},
-          group: {type:Boolean, default: true},
-          user : {type:Boolean, default: true},
-          truckType : {type:Boolean, default: true},
-          payRate : {type:Boolean, default: true},
-          cost: {type:Boolean, default: true},
-          truck: {type:Boolean, default: true},
-          hauler: {type:Boolean, default: true},
+            project: { type: Boolean, default: false },
+            group: { type: Boolean, default: true },
+            user: { type: Boolean, default: true },
+            truckType: { type: Boolean, default: true },
+            payRate: { type: Boolean, default: true },
+            cost: { type: Boolean, default: true },
+            truck: { type: Boolean, default: true },
+            hauler: { type: Boolean, default: true },
         },
-        joinedDate : {type: Number, default: 0},
+        joinedDate: { type: Number, default: 0 },
         subscriptionId: String,
         subscriptionIsCancel: Boolean,
-        subscriptionIsExpire: Boolean, 
+        subscriptionIsExpire: Boolean,
         subscriptionCancelDate: { type: Number, default: 0 },
         isSubscribe: Boolean,
         isFreeTrial: Boolean,
@@ -196,8 +196,8 @@ db.once("open", async function () {
         planType: String,
         createdAt: { type: Number, default: () => new Date().getTime() },
         updatedAt: { type: Number, default: () => new Date().getTime() },
-      });
-      const OrgMember = mongoose.model("orgMembers", OrgMemberSchema);
+    });
+    const OrgMember = mongoose.model("organizationmembers", OrgMemberSchema);
 
 
     // Define the Migration schema and model
@@ -218,49 +218,58 @@ db.once("open", async function () {
             // await new Migration({ migrationName }).save();
 
             const notificationData = await Notification.find({ isActionable: { $exists: false } });
-            let promise = []
-            for (let index = 0; index < notificationData.length; index++) {
-                const notification = notificationData[index];
-                // console.log(notificationData[index]["organizationId"])
-                const senderOrganizationData = await Organization.findById(notification?.["organizationId"]);
 
-                const senderData = await User.findById(senderOrganizationData?.["userId"]).select("_id firstName lastName role").exec()
-
-                const receiverData = await User.findOne({ mobileNumber: notification?.["mobileNumber"] }).select("_id firstName lastName role").exec()
-                const receiverOrganizationData = await Organization.findOne({ userId: String(receiverData?.["_id"]) });
-
-                const orgMember= await OrgMember.findOne({$or:[{userId:notification?.["receiverUserId"]},{mobileNumber:notification?.["mobileNumber"]}],organizationId:notification?.["organizationId"]}).select("_id");
+            const promises = notificationData.map(async (notification) => {
+                const senderOrganizationData = await Organization.findById(notification?.organizationId);
+                const senderData = await User.findById(senderOrganizationData?.userId).select("_id firstName lastName role").exec();
+                const receiverData = await User.findOne({ mobileNumber: notification?.mobileNumber }).select("_id firstName lastName role").exec();
+                const receiverOrganizationData = await Organization.findOne({ userId: String(receiverData?._id) });
+                const orgMember = await OrgMember.findOne({
+                    $or: [{ userId: notification?.receiverUserId }, { mobileNumber: notification?.mobileNumber }],
+                    organizationId: notification?.organizationId
+                }).select("_id");
 
                 if (senderOrganizationData && senderData && orgMember) {
-                    const newNotificationData = {}
-                    newNotificationData["type"] = "user_invite";
-                    newNotificationData["status"] = notification["status"];
-                    newNotificationData["senderUserId"] = String(senderData["_id"]);
-                    newNotificationData["senderUserRole"] = "Contractor";
-                    newNotificationData["senderUserName"] = `${senderData["firstName"]} ${senderData["lastName"]}`;
-                    newNotificationData["senderUserOrganizationId"] = String(senderOrganizationData["_id"]);
-                    newNotificationData["senderUserOrganizationName"] = String(senderOrganizationData["organizationName"]);
-                    newNotificationData["senderUserOrganizationImage"] = senderOrganizationData["organizationImage"];
-                    newNotificationData["receiverUserId"] = receiverData ? String(receiverData["_id"]) : null;
-                    newNotificationData["receiverUserRole"] = "Contractor";
-                    newNotificationData["receiverUserName"] = receiverData["firstName"] ? `${receiverData["firstName"]} ${receiverData["lastName"]}` : `${notification["firstName"]} ${notification["lastName"]}`;
-                    newNotificationData["receiverUserMobileNumber"] = notification["mobileNumber"];
-                    newNotificationData["receiverUserOrganizationId"] = String(receiverOrganizationData?.["_id"]) || null;
-                    newNotificationData["receiverUserOrganizationName"] = String(receiverOrganizationData?.["organizationName"]) || null;
-                    newNotificationData["receiverUserOrganizationImage"] = receiverOrganizationData?.["organizationImage"] || null;
-                    newNotificationData["organizationMemberId"] = String(orgMember?.["_id"])
-                    newNotificationData["isActionable"] = notification["status"] == "Requested" ? true :false;
-                    newNotificationData["message"] = {
-                        "en": "You've been invited to join the organization.",
-                        "fr": "Vous avez été invité à rejoindre l'organisation.",
-                        "es": "Has sido invitado a unirte a la organización."
-                    }
-                    console.log(newNotificationData)
-                    // promise.push(await notification.replaceOne({_id:notification["_id"]},newNotificationData))
+                    const newNotificationData = {
+                        type: "user_invite",
+                        status: notification?.status,
+                        senderUserId: String(senderData._id),
+                        senderUserRole: "Contractor_Owner",
+                        senderUserName: `${senderData.firstName} ${senderData.lastName}`,
+                        senderUserOrganizationId: String(senderOrganizationData._id),
+                        senderUserOrganizationName: senderOrganizationData.organizationName,
+                        senderUserOrganizationImage: senderOrganizationData.organizationImage,
+                        receiverUserId: receiverData ? String(receiverData._id) : null,
+                        receiverUserRole: "Contractor_Owner",
+                        receiverUserName: receiverData?.firstName ? `${receiverData.firstName} ${receiverData.lastName}` : `${notification.firstName} ${notification.lastName}`,
+                        receiverUserMobileNumber: notification?.mobileNumber,
+                        receiverUserOrganizationId: receiverOrganizationData ? String(receiverOrganizationData._id) : null,
+                        receiverUserOrganizationName: receiverOrganizationData ? receiverOrganizationData.organizationName : null,
+                        receiverUserOrganizationImage: receiverOrganizationData ? receiverOrganizationData.organizationImage : null,
+                        organizationMemberId: String(orgMember?._id),
+                        isActionable: notification?.status === "Requested",
+                        message: {
+                            en: `You've been invited to join the ${senderOrganizationData.organizationName} organization.`,
+                            fr: `Vous avez été invité à rejoindre ${senderOrganizationData.organizationName} l'organisation.`,
+                            es: `Has sido invitado a unirte a la ${senderOrganizationData.organizationName} organización.`
+                        }
+                    };
+
+                    console.log("Processing notification index:", notificationData.indexOf(notification));
+
+                    // ✅ Corrected: Using `Notification.replaceOne()` on the collection
+                    return Notification.replaceOne({ _id: notification._id }, newNotificationData);
                 } else {
-                    console.log("organization not found !!");
+                    console.log("Organization not found for notification:", notification._id);
+                    return null; // No replacement in this case
                 }
-            }
+            });
+
+            // ✅ Run all updates in parallel
+            await Promise.all(promises);
+
+            console.log("All notifications updated successfully.");
+
 
 
             // await Promise.all(promise).then(() => {

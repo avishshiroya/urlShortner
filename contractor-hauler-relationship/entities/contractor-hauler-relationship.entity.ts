@@ -1,43 +1,39 @@
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 import mongoose from 'mongoose';
+import { inviteStatusEnum } from 'src/constant/invite-status';
 
 export type ContractorHaulerRelationshipDocument = ContractorHaulerRelationship & Document;
 
 function customTimestamp(): number {
     return new Date().getTime();
 }
-export enum ContractorHaulerRelationshipStatus {
-    Requested = 'Requested',
-    Accepted = 'Accepted',
-    Rejected = 'Rejected',
-    Deactivated = 'Deactivated',
-}
+
 @Schema()
 export class ContractorHaulerRelationship {
     _id: mongoose.Types.ObjectId;
 
-    @Prop()
+    @Prop({default:null})
     contractorId: string;
 
-    @Prop()
+    @Prop({default:null})
     contractorFirstName: string
 
-    @Prop()
+    @Prop({default:null})
     contractorLastName: string
 
     @Prop()
     contractorMobileNumber: string
 
-    @Prop()
+    @Prop({default:null})
     contractorEmail: string
 
-    @Prop()
+    @Prop({default:null})
     contractorOrganizationId: string
 
     @Prop()
     contractorOrganizationName: string
 
-    @Prop()
+    @Prop({default:null})
     contractorOrganizationUniqueId: string
 
     @Prop()
@@ -46,28 +42,28 @@ export class ContractorHaulerRelationship {
     @Prop()
     contractorCountryCodeEmoji: String
 
-    @Prop()
+    @Prop({default:null})
     haulerId: string;
 
-    @Prop()
+    @Prop({default:null})
     haulerFirstName: string
 
-    @Prop()
+    @Prop({default:null})
     haulerLastName: string
 
     @Prop()
     haulerMobileNumber: string
 
-    @Prop()
+    @Prop({default:null})
     haulerEmail: string
 
-    @Prop()
+    @Prop({default:null})
     haulerOrganizationId: string
 
     @Prop()
     haulerOrganizationName: string
 
-    @Prop()
+    @Prop({default:null})
     haulerOrganizationUniqueId: string
 
     @Prop()
@@ -76,14 +72,17 @@ export class ContractorHaulerRelationship {
     @Prop()
     haulerCountryCodeEmoji: String
 
-    @Prop({ default: ContractorHaulerRelationshipStatus.Requested })
-    status: ContractorHaulerRelationshipStatus
+    @Prop({ default: inviteStatusEnum.Requested })
+    status: inviteStatusEnum
 
     @Prop({ default: 0 })
     joinedDate: number
 
-    @Prop()
-    deletedBy: string
+    @Prop({default:null})
+    deletedBy:string
+
+    @Prop({default:null})
+    createdBy:string
 
     @Prop({ default: customTimestamp })
     createdAt: number;
@@ -93,37 +92,3 @@ export class ContractorHaulerRelationship {
 }
 export const ContractorHaulerRelationshipSchema = SchemaFactory.createForClass(ContractorHaulerRelationship);
 
-
-
-export class TicketSignatures {
-    ticketId: string
-    timecardId: string
-    projectId: string
-    userId: string
-    signatures: Array<{
-        signature: string
-        userId: string
-        organizationId: string
-        timestamp: number
-        status: string
-        description: string
-    }>
-}
-export class TicketSignaturesIndi {
-    ticketId: string
-    timecardId: string
-    projectId: string
-    userId: string
-    ownSignature: string
-    ownOrganizationId: string
-    ownUserId: string
-    ownTimestamp: number
-    ownStatus: string
-    ownDescription: string
-    parentSignature: string
-    parentOrganizationId: string
-    parentUserId: string
-    parentTimestamp: number
-    parentStatus: string
-    parentDescription: string
-}

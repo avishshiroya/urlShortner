@@ -24,8 +24,8 @@ export class Organization {
     organizationImage: string;
 
     @Prop()
-    role:string
-
+    role:string 
+    
     @Prop()
     uniqueId:string
 
