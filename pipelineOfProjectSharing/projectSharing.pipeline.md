@@ -75,3 +75,68 @@ Let me know if any further adjustments are needed!
     joinedDate: Date;
     revokedDate: Date
 }
+
+
+
+
+
+```ts
+ async showTicketName(users, tickets, userOrganizatioId) {
+    const updatedTickets = [];
+
+    for (let index = 0; index < tickets.length; index++) {
+      const ticket = tickets[index];
+      let showableName = '';        
+      const ticketCreater = users.filter((ele) => 
+        ele.userId == ticket.userId &&
+        ele.organizationId == ticket.organizationId
+      );      
+
+      if (ticketCreater.length > 0) {
+        const ticketUser = ticketCreater[0];     
+        
+        // Case 1: Same organization
+        if (ticketUser.organizationId == userOrganizatioId) {
+          showableName = ticketCreater?.userName;
+        } 
+        // else if (ticketUser.path && ticketUser.path.length == 1) {
+        //   showableName = ticketUser?.userName;
+        // } 
+        
+        //Case 2 : Path length is 2
+        else if (ticketUser.path && ticketUser.path.length == 2) {
+          const user = await this.organizationModel.findById({
+            _id: ticketUser?.path[1],
+          });
+          showableName = user
+            ? user['organizationName']
+            : 'Unknown Organization';
+        } 
+
+        // Case 3 :Handle more complex path logic
+        else {
+          const loginUser = ticketUser.path.find(
+            (ele) => ele == userOrganizatioId,
+          );
+          
+          if (loginUser) {
+            const index = ticketUser.path.indexOf(loginUser);
+            const user = await this.organizationModel.findById({
+              _id: ticketUser?.path[index + 1],
+            });     
+            showableName = user
+              ? user['organizationName']
+              : 'Unknown Organization';
+          } else {  
+            showableName = 'N / A';
+          }
+        }
+        
+        updatedTickets.push({...ticket, showableName });
+      } else {
+        console.log('No ticket creator found for ticket:', ticket._id);
+      }
+    }
+    return updatedTickets;
+  }
+```
