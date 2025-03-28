@@ -210,12 +210,12 @@ db.once("open", async function () {
 
     async function migrateNotificationData() {
         try {
-            // const migrationRecord = await Migration.findOne({ migrationName }).exec();
-            // if (migrationRecord) {
-            //     console.log("Migration has already been executed.");
-            //     return;
-            // }
-            // await new Migration({ migrationName }).save();
+            const migrationRecord = await Migration.findOne({ migrationName }).exec();
+            if (migrationRecord) {
+                console.log("Migration has already been executed.");
+                return;
+            }
+            await new Migration({ migrationName }).save();
 
             const notificationData = await Notification.find({ isActionable: { $exists: false } });
 
@@ -257,11 +257,10 @@ db.once("open", async function () {
 
                     console.log("Processing notification index:", notificationData.indexOf(notification));
 
-                    // ✅ Corrected: Using `Notification.replaceOne()` on the collection
                     return Notification.replaceOne({ _id: notification._id }, newNotificationData);
                 } else {
                     console.log("Organization not found for notification:", notification._id);
-                    return null; // No replacement in this case
+                    return null; 
                 }
             });
 

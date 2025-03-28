@@ -9,7 +9,6 @@ const db = mongoose.connection;
 db.once("open", () => console.log("Connected to MongoDB"));
 db.on("error", (err) => console.error("MongoDB connection error:", err));
 
-// Old Schema (Original Data Structure)
 const ProjectSharingSchema = new mongoose.Schema({
     projectId: String,
     projectUniqueId: String,
@@ -114,12 +113,12 @@ const migrationName = "Project_Sharing_Data";
 
 async function migrateData() {
     try {
-        // const migrationRecord = await Migration.findOne({ migrationName }).exec();
-        // if (migrationRecord) {
-        //     console.log("Migration has already been executed.");
-        //     return;
-        // }
-        // await new Migration({ migrationName }).save();
+        const migrationRecord = await Migration.findOne({ migrationName }).exec();
+        if (migrationRecord) {
+            console.log("Migration has already been executed.");
+            return;
+        }
+        await new Migration({ migrationName }).save();
         const oldData = await projectSharingSchema.find(
             {
                 _id: {
@@ -165,7 +164,7 @@ async function migrateData() {
                 }
                 const sharedWith = []
                 for (let i = 0; i < nodes.length; i++) {
-                    if (nodes[i].parentOrganizationId == node.organizationId) {
+                    if (nodes[i].parentOrganizationId == node.organizationId && (nodes[i]["status"] == "Accepted" || nodes[i]["status"] == "Requested")) {
                         sharedWith.push({
                             organizationId: nodes[i].organizationId,
                             organizationName: nodes[i].organizationName,
