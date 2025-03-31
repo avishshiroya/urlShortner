@@ -11,7 +11,7 @@ db.clockouts.updateMany({}, {
 
 
 db.clockouts.updateMany({}, {
-    $rename: { "temp_timecardUniqueId": "timecardUniqueId" }
+    $rename: { "temp_timecardUniqueId": "timecard" }
 });
 
 

@@ -1,8 +1,10 @@
+
 const mongoose = require("mongoose");
 
 // MongoDB Connection
 // const MONGO_URI = "mongodb+srv://myTruckBoss:Trucking2024!@cluster0.rg9xflz.mongodb.net/myTruckBoss";
-const MONGO_URI = "mongodb+srv://avishshiroyacrawlapps:07T7lBLs3b4TEO8c@cluster0.wrfql.mongodb.net/myTruckBoss?retryWrites=true&w=majority&appName=Cluster0";
+// const MONGO_URI = "mongodb+srv://avishshiroyacrawlapps:07T7lBLs3b4TEO8c@cluster0.wrfql.mongodb.net/myTruckBoss?retryWrites=true&w=majority&appName=Cluster0";
+const MONGO_URI = "mongodb+srv://avishshiroyacrawlapps:QUekVO5GkkHjar25@cluster0.jqeuo.mongodb.net/myTruckBoss?retryWrites=true&w=majority&appName=Cluster0";
 // mongoose.connect(MONGO_URI);
 
 const db = mongoose.connection;
@@ -137,7 +139,39 @@ const ClockOutSchema = new mongoose.Schema({
     createdAt: Number,
     updatedAt: Number,
 });
-const OrganizationSchema = new Schema({
+const TruckSchema = new mongoose.Schema({
+    userId: String,
+    userName: String,
+    haulerName: String,
+    haulerId: String,
+    haulerOrganizationId: String,
+    haulerOrganizationName: String,
+    contractorId: String,
+    contractorName: String,
+    contractorOrganizationId: String,
+    contractorOrganizationName: String,
+    truckId: String,
+    payRate: {
+        payRateId: String,
+        payRateDescription: String,
+        charge: Number,
+        chargeType: String
+    },
+    truckTypeId: String,
+    truckType: String,
+    capacity: Number,
+    capacityType: String,
+    organizationId: String,
+    licencePlateNumber: String,
+    licencePlateImage: String,
+    relationshipId: String,
+    isAssigned: Boolean,
+    status: String,
+    isDelete: Boolean,
+    createdAt: Number,
+    updatedAt: Number,
+})
+const OrganizationSchema = new mongoose.Schema({
     userId: String,
     organizationImage: String,
     organizationName: String,
@@ -150,6 +184,7 @@ const Organization = mongoose.model("organizations", OrganizationSchema);
 const Timecard = mongoose.model("timecards", TimecardSchema);
 const ClockIn = mongoose.model("clockins", ClockInSchema);
 const ClockOut = mongoose.model("clockouts", ClockOutSchema);
+const Truck = mongoose.model("trucks", TruckSchema);
 const MigrationSchema = new mongoose.Schema({
     migrationName: { type: String, unique: true },
     createdAt: { type: Date, default: Date.now },
@@ -166,21 +201,110 @@ async function migrateData() {
         //     return;
         // }
         // await new Migration({ migrationName }).save();
-        const timecards = await ClockIn.find({ _id: mongoose.Types.ObjectId("667b9837cf80ad0e055f9cae") }).limit(2);
+
+        // Find all timecards
+        const timecards = await ClockIn.find({ _id: new mongoose.Types.ObjectId("667b9837cf80ad0e055f9cae") })
+
         for (let timecard of timecards) {
-            let totalLoad = 0;
-            const organization = await Organization.findById(timecard["organizationId"])
+            //Create New Timecard Data
             const timecardDetails = await DataOfTimecard(timecard);
-            timecardDetails["organizationUniqueId"] = organization["uniqueId"]
-            totalLoad = ticket["totalLoad"]
+
+            const clockOutTickets = await ClockOut.find({ clockinId: String(timecard["_id"]) });
+
+            var totalQuantity = 0;
+            var manuallyEnteredLoad = 0;
+            var totalHour = 0;
+            var totalLoad = 0;
+            var totalCost = 0;
+            var manualTotalQuantity = 0;
+            var totalBudget = 0
+            // sum of all needed totals
+            for (let clockOutTicket of clockOutTickets) {
+                totalQuantity += clockOutTicket["quantity"]
+                manualTotalQuantity = clockOutTicket["totalQuantity"]
+                if (clockOutTicket["manuallyEnteredLoad"]) {
+                    manuallyEnteredLoad = clockOutTicket["totalLoad"]
+                }
+                totalLoad = totalLoad
+                totalHour += clockOutTicket["totalTime"]
+                totalCost += clockOutTicket["totalTime"] * clockOutTicket["charge"]
+                totalBudget += clockOutTicket["quantity"] * clockOutTicket["costUnitBudget"];
+            }
+            //update timecard details
+            timecardDetails["totalLoad"] = manuallyEnteredLoad > 0 ? manuallyEnteredLoad : totalLoad;
+            timecardDetails["manuallyEnteredLoad"] = manuallyEnteredLoad > 0;
+            timecardDetails["totalQuantity"] = manualTotalQuantity > 0 ? manualTotalQuantity : totalQuantity;
+            timecardDetails["totalHour"] = totalHour;
+            timecardDetails["totalCost"] = Number(totalCost.toFixed(2));
+            timecardDetails["totalBudget"] = totalBudget;
+
+            //save timecard data
+            const newTimecard = await Timecard.create(timecardDetails)
+            console.log("Timecard save ======= ===== ======= ======= ===== ");
+
             for (truck of timecard["truckDetail"]) {
-                if (truck?.isClockOut) {
-                    const ticket = await ClockOut.findOne({ truckId: truck["truckId"], clockinId: timecard["_id"] }).sort({ manuallyEnteredLoad: -1 }).select("_id manuallyEnteredLoad");
-                    if (ticket["manuallyEnteredLoad"]) {
-                        totalLoad = ticket["totalLoad"]
+                const truckDetail = await Truck.findById(truck["truckId"])
+                if (!truck?.isClockOut) {
+                    //create clockInData for the tickets
+                    const clockinTicket = {
+                        userId: newTimecard["userId"],
+                        userName: newTimecard["userName"],
+                        timecardId: String(newTimecard["_id"]),
+                        timecard: newTimecard["uniqueId"],
+                        userRole: newTimecard["userRole"],
+                        organizationId: newTimecard["organizationId"],
+                        organizationName: newTimecard["organizationName"],
+                        projectId: newTimecard["projectId"],
+                        truckId: truck["truck"],
+                        truckType: truck["truckType"],
+                        groupId: newTimecard["groupId"],
+                        costId: newTimecard["costId"],
+                        costAccount: newTimecard["costUniqueId"],
+                        costAccountName: newTimecard["costName"],
+                        group: newTimecard["groupUniqueId"],
+                        groupName: newTimecard["groupName"],
+                        project: newTimecard["projectUniqueId"],
+                        projectName: newTimecard["projectName"],
+                        loadCount: truck["loadCount"],
+                        truckImage: truckDetail["licencePlateImage"],
+                        timeAdjustment: truck["timeAdjustment"],
+                        additionalDocument: truck["additionalDocuments"],
+                        notes: truck["notes"],
+                        clockOutTime: 0,
+                        clockInTime: truck["clockInTime"],
+                        haulerName: truck["haulerName"],
+                        haulerOrganizationName: "",
+                        truck: truck["truck"],
+                        ticketType: "INFORMAL",
+                        totalTime: 0,
+                        charge: 0,
+                        timeCardDate: newTimecard["createdAt"],
+                        costUnitBudget: newTimecard["costUnitBudget"],
+                        costMeasurement: newTimecard["costMeasurement"],
+                        paymentUnit: newTimecard["paymentUnit"],
+                        manuallyEnteredLoad: false,
+                        quantity: truck["loadCount"] * newTimecard["paymentUnit"],
+                        totalLoad: 0,
+                        totalQuantity: 0,
+                        isClockOut: false,
+                        createdAt: newTimecard["createdAt"],
+                        updatedAt: newTimecard["updatedAt"],
                     }
-                } else {
-                    console.log("clockIN -> truckId ", truck["truck"]);
+                    //save ticket datas
+                    await ClockOut.create(clockinTicket);
+
+                }
+                else {
+                    // update clockout ticket data with changing timecard details
+                    const clockout = await ClockOut.findOne({ clockinId: String(timecard["_id"]), truckId: truck["truckId"] })
+                    if (clockout) {
+                        await ClockOut.findByIdAndUpdate(clockout["_id"],
+                            {
+                                timecardId: String(newTimecard["_id"]), timecard: newTimecard["uniqueId"], ticketType: "INFORMAL",
+                                truckImage: truckDetail["licencePlateImage"], userRole: generateRole(clockout["userRole"])
+                            }
+                        )
+                    }
                 }
             }
         }
@@ -210,19 +334,23 @@ const DataOfTimecard = async (data) => {
         (sum, { isClockOut }) => sum + !isClockOut ? 1 : 0,
         0,
     )
-    let uniqueId;
-    const timecardUniqueId = await Timecard.findOne({ organizationId: data["organizationId"] }).sort({ _id: -1 }).select("uniqueId");
-    if (timecardUniqueId) {
-        uniqueId = Number(timecardUniqueId["uniqueId"]) + 1;
+    const organization = await Organization.findById(data["organizationId"])
+
+    let uniqueId = data["timecardId"];
+    if (!uniqueId) {
+        uniqueId = await generateUniqueId(data["organizationId"]);
     } else {
-        uniqueId = 1001;
+        const timecardUniqueId = await Timecard.findOne({ organizationId: data["organizationId"], uniqueId }).sort({ _id: -1 }).select("uniqueId");
+        if (timecardUniqueId) {
+            uniqueId = await generateUniqueId(data["organizationId"]);
+        }
     }
     return {
         userId: data["userId"],
         userName: data["userName"],
-        userRole: data["userName"],
+        userRole: generateRole(data["userRole"]),
         organizationId: data["organizationId"],
-        organizationUniqueId: data[""],//find later organization uniqueId
+        organizationUniqueId: organization["uniqueId"],
         organizationName: data["organizationName"],
         projectId: data["projectId"],
         projectUniqueId: data["project"],
@@ -235,7 +363,7 @@ const DataOfTimecard = async (data) => {
         costName: data["costAccountName"],
         costUnitBudget: data["costUnitBudget"],
         costMeasurement: data["costMeasurement"],
-        uniqueId: uniqueId, // timecard not have unqiue Id
+        uniqueId: uniqueId,
         description: data["description"],
         paymentUnit: data["paymentUnit"],
         totalLoad: 0,
@@ -248,5 +376,26 @@ const DataOfTimecard = async (data) => {
         updatedAt: data["updatedAt"],
     }
 }
-
+//generate role
+const generateRole = (role) => {
+    if (!role) return "Contractor_Owner"
+    if (role.toLowerCase() == "owner") {
+        return "Contractor_Owner"
+    } else if (role.toLowerCase() == "admin") {
+        return "Contractor_Admin"
+    } else if (role.toLowerCase() == "truckboss") {
+        return "Contractor_TruckBoss"
+    } else {
+        return role
+    }
+}
+//generate new uniqueId of timecard
+const generateUniqueId = async (organizationId) => {
+    const timecardUniqueId = await Timecard.findOne({ organizationId }).sort({ _id: -1 }).select("uniqueId");
+    if (timecardUniqueId) {
+        return Number(timecardUniqueId["uniqueId"]) + 1;
+    } else {
+        return 1001;
+    }
+}
 run();
